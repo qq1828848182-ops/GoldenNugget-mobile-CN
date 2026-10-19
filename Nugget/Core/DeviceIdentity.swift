@@ -21,7 +21,7 @@ struct DeviceIdentity: Equatable, Sendable {
     var isIPhone: Bool { productType.hasPrefix("iPhone") }
 
     var describe: String {
-        if productType.isEmpty && version.isEmpty { return "unknown device" }
+        if productType.isEmpty && version.isEmpty { return "未知设备" }
         if productType.isEmpty { return "iOS \(version)" }
         if version.isEmpty { return productType }
         return "\(productType) / iOS \(version)"
@@ -146,9 +146,9 @@ final class DeviceIdentityMonitor: ObservableObject {
         guard read != current else { return false }
         current = read
         if read == .unknown {
-            GoldenNuggetEngine.shared.log("device identity unavailable — the device has not answered lockdown yet")
+            GoldenNuggetEngine.shared.log("设备标识不可用 — 设备尚未响应 lockdown")
         } else {
-            GoldenNuggetEngine.shared.log("device identity: \(read.describe)")
+            GoldenNuggetEngine.shared.log("设备标识：\(read.describe)")
         }
         return true
     }

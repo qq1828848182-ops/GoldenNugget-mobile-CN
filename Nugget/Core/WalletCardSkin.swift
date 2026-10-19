@@ -161,7 +161,7 @@ enum WalletEngine {
                       progress: @escaping (Double) -> Void) async throws {
         let withImages = cards.filter { $0.isSelected && $0.imageData != nil }
         guard !withImages.isEmpty else {
-            throw GoldenNuggetError("No card has a skin selected.")
+            throw GoldenNuggetError("没有卡片选择了皮肤。")
         }
 
         let total = Double(withImages.count)
@@ -171,12 +171,12 @@ enum WalletEngine {
             log("[\(index + 1)/\(withImages.count)] \(identifier)")
 
             guard let data = card.imageData, let image = UIImage(data: data) else {
-                log("  ⚠️ unreadable skin, skipped")
+                log("  ⚠️ 皮肤无法读取，已跳过")
                 continue
             }
             let skins = WalletSkinEngine.allSkins(from: image)
             guard !skins.isEmpty else {
-                log("  ⚠️ no skin could be generated, skipped")
+                log("  ⚠️ 无法生成皮肤，已跳过")
                 continue
             }
 
@@ -195,21 +195,21 @@ enum WalletEngine {
                     targetDir: "\(cardsRoot)/\(identifier).pkpass"
                 )
             } catch {
-                log("  ❌ artwork: \(error.localizedDescription)")
+                log("  ❌ 卡片图像：\(error.localizedDescription)")
                 continue
             }
-            log("  ✅ artwork written (\(skins.count) file(s))")
+            log("  ✅ 卡片图像已写入（\(skins.count) 个文件）")
 
             do {
                 try await invalidateCache(identifier: identifier,
                                           pairingPath: pairingPath)
-                log("  ✅ pass cache invalidated")
+                log("  ✅ pass 缓存已失效")
             } catch {
                 // The artwork is already in place; a stale cache is a cosmetic
                 // failure the user can clear by force-quitting Wallet, so it is
                 // reported and the card still counts.
-                log("  ⚠️ cache not invalidated: \(error.localizedDescription) — "
-                    + "force-quit Wallet to see the new skin")
+                log("  ⚠️ 缓存未失效：\(error.localizedDescription) — 请强制退出 Wallet 以查看新皮肤"
+                    + "")
             }
 
             written += 1
@@ -217,10 +217,10 @@ enum WalletEngine {
         }
 
         guard written > 0 else {
-            throw GoldenNuggetError("No card skin was written. The device has to be unlocked "
-                + "with LocalDevVPN up.")
+            throw GoldenNuggetError("没有写入任何卡片皮肤。"
+                + "设备必须在 LocalDevVPN 开启的状态下解锁。")
         }
-        log("Applied \(written)/\(withImages.count) card skin(s). Force-quit Wallet to see them.")
+        log("已应用 \(written)/\(withImages.count) 个卡片皮肤。请强制退出 Wallet 以查看。")
     }
 
     /// Replace Passbook's cached renderings with bytes it cannot use.

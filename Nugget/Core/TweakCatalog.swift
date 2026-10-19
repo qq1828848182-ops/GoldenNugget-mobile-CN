@@ -41,8 +41,8 @@ enum TweakFileLocation: String, CaseIterable, Sendable {
 enum TweakSection: String, CaseIterable, Identifiable, Sendable {
     case liquidGlass = "Liquid Glass"
     case springboard = "SpringBoard"
-    case internalOptions = "Internal Options"
-    case daemons = "Daemons to Disable"
+    case internalOptions = "内部选项"
+    case daemons = "可禁用的守护进程"
     var id: String { rawValue }
 }
 
@@ -63,7 +63,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ForceSolariumFallback",
             section: .liquidGlass,
-            title: "Force Solarium Fallback",
+            title: "强制 Solarium 回退",
             location: .globalPreferences,
             key: "SolariumForceFallback",
             value: .bool(true),
@@ -76,7 +76,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces the older Solarium rendering path instead of the newer one. Useful for troubleshooting or for devices where the current Solarium engine misbehaves on iOS 26.",
+            detail: "强制使用较旧的 Solarium 渲染路径，而非较新的路径。适用于排查故障，或当前 Solarium 引擎在 iOS 26 上表现异常的设备。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -84,7 +84,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "IgnoreSolariumLinkedOnCheck",
             section: .liquidGlass,
-            title: "Ignore Solarium Linked-On Check",
+            title: "忽略 Solarium 链接版本检查",
             location: .globalPreferences,
             key: "com.apple.SwiftUI.IgnoreSolariumLinkedOnCheck",
             value: .bool(true),
@@ -97,7 +97,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Ignores the compile-time (linked-on) SDK version check for Solarium, allowing Liquid Glass features to run that would otherwise be gated by the SDK an app was built with.",
+            detail: "忽略 Solarium 针对「链接时」SDK 版本的编译期检查，使那些本会因应用构建所用 SDK 版本而受限的 Liquid Glass 功能得以运行。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -105,7 +105,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ForceSolariumIntelligence",
             section: .liquidGlass,
-            title: "Force Solarium Intelligence",
+            title: "强制 Solarium Intelligence",
             location: .globalPreferences,
             key: "SolariumForceIntelligence",
             value: .bool(true),
@@ -118,7 +118,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces the experimental Solarium 'Intelligence' rendering features (adaptive, machine-driven effects) on iOS 27 where they are not enabled by default.",
+            detail: "在 iOS 27 上强制启用实验性的 Solarium「智能」渲染特性（自适应、由机器驱动的效果），这些特性默认并未开启。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -126,7 +126,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ForceEnhancedSpeculars",
             section: .liquidGlass,
-            title: "Force Enhanced Speculars",
+            title: "强制增强高光",
             location: .globalPreferences,
             key: "SolariumForceEnhancedSpeculars",
             value: .bool(true),
@@ -139,7 +139,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the enhanced specular (highlight and reflection) rendering pass that is normally only used on the most capable devices.",
+            detail: "启用增强的高光（高亮与反射）渲染通道，该通道通常只在性能最强的设备上使用。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -147,7 +147,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "UISolariumFallback",
             section: .liquidGlass,
-            title: "UI Solarium Fallback",
+            title: "UI Solarium 回退",
             location: .globalPreferences,
             key: "UISolariumForceFallback",
             value: .bool(true),
@@ -160,7 +160,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces UIKit to use the fallback Solarium path when rendering UI. Can fix broken or glitchy system UI on some iOS 27 devices.",
+            detail: "强制 UIKit 在渲染界面时使用回退的 Solarium 路径。可修复部分 iOS 27 设备上异常或卡顿的系统界面。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -168,7 +168,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "IgnoreSolariumHardwareCheck",
             section: .liquidGlass,
-            title: "Ignore Solarium Hardware Check",
+            title: "忽略 Solarium 硬件检查",
             location: .globalPreferences,
             key: "com.apple.SwiftUI.IgnoreSolariumHardwareCheck",
             value: .bool(true),
@@ -181,7 +181,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Disables the hardware capability check for Solarium, enabling Liquid Glass effects on devices officially considered too weak.",
+            detail: "关闭 Solarium 的硬件能力检查，让官方认定性能不足的设备也能启用 Liquid Glass 效果。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -189,7 +189,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "IgnoreSolariumOptOut",
             section: .liquidGlass,
-            title: "Ignore Solarium Opt-Out",
+            title: "忽略 Solarium 退出开关",
             location: .globalPreferences,
             key: "com.apple.SwiftUI.IgnoreSolariumOptOut",
             value: .bool(true),
@@ -202,7 +202,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Ignores the system opt-out flag for Solarium, re-enabling Liquid Glass on devices or firmware that have it switched off.",
+            detail: "忽略系统的 Solarium 退出开关，在已关闭该功能的设备或固件上重新启用 Liquid Glass。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -210,7 +210,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisallowGlassButtons",
             section: .liquidGlass,
-            title: "Disallow Glass Buttons",
+            title: "禁止玻璃按钮",
             location: .globalPreferences,
             key: "SBDisallowGlassButtons",
             value: .bool(true),
@@ -223,7 +223,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Prevents the Liquid Glass material from being applied to system buttons, keeping the old solid button style.",
+            detail: "阻止将 Liquid Glass 材质应用到系统按钮上，保留旧的实心按钮样式。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -231,7 +231,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisallowGlassLockScreen",
             section: .liquidGlass,
-            title: "Disallow Glass Lock Screen",
+            title: "禁止玻璃锁屏",
             location: .globalPreferences,
             key: "SBDisallowGlassLockScreen",
             value: .bool(true),
@@ -244,7 +244,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Prevents the Liquid Glass material from being applied to the Lock Screen, keeping the old lock screen look.",
+            detail: "阻止将 Liquid Glass 材质应用到锁屏，保留旧的锁屏外观。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -252,7 +252,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableSpecularEverywhere",
             section: .liquidGlass,
-            title: "Disable Specular Everywhere",
+            title: "全局停用高光",
             location: .globalPreferences,
             key: "SBDisableSpecularEverywhere",
             value: .bool(true),
@@ -265,7 +265,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Disables the specular (glossy reflection) rendering everywhere, removing the shiny glass highlight from Liquid Glass surfaces.",
+            detail: "在全局禁用高光（光泽反射）渲染，移除 Liquid Glass 表面上的玻璃亮泽。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -273,7 +273,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NoLiquidClock",
             section: .liquidGlass,
-            title: "Disable Liquid Glass on LS Clock",
+            title: "停用锁屏时钟的 Liquid Glass",
             location: .globalPreferences,
             key: "SBDisallowGlassTime",
             value: .bool(true),
@@ -286,7 +286,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Renders the Lock Screen clock in the old solid style instead of with the Liquid Glass / dew effect.",
+            detail: "让锁屏时钟以旧的实心样式渲染，而不使用 Liquid Glass／露珠效果。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -294,7 +294,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NoLiquidDock",
             section: .liquidGlass,
-            title: "Disable Liquid Glass on Dock",
+            title: "停用程序坞的 Liquid Glass",
             location: .globalPreferences,
             key: "SBDisableGlassDock",
             value: .bool(true),
@@ -307,7 +307,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Renders the Home Screen dock in the old solid style instead of with the Liquid Glass material.",
+            detail: "让主屏幕 Dock 以旧的实心样式渲染，而不使用 Liquid Glass 材质。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -315,7 +315,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableSpecularMotion",
             section: .liquidGlass,
-            title: "Disable Specular Motion",
+            title: "停用高光动态效果",
             location: .globalPreferences,
             key: "SBDisableSpecularEverywhereUsingLSSAssertion",
             value: .bool(true),
@@ -328,7 +328,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Disables the motion-based specular effect on the Lock Screen, so the moving light reflection no longer shifts as you tilt your device.",
+            detail: "关闭锁屏上基于运动的高光效果，倾斜设备时移动的光反射不再随之偏移。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -336,7 +336,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableOuterRefraction",
             section: .liquidGlass,
-            title: "Disable Outer Refraction",
+            title: "停用外部折射",
             location: .globalPreferences,
             key: "SolariumDisableOuterRefraction",
             value: .bool(true),
@@ -349,7 +349,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Disables the outer refraction (the liquid bending of content at the glass edge) for a cleaner, less distorted look.",
+            detail: "关闭外部折射（内容在玻璃边缘的液态弯折效果），画面更干净、畸变更小。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -357,7 +357,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableSolariumHDR",
             section: .liquidGlass,
-            title: "Disable Solarium HDR",
+            title: "停用 Solarium HDR",
             location: .globalPreferences,
             key: "SolariumAllowHDR",
             value: .bool(false),
@@ -391,7 +391,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Turns on the system 'Reduce Bright Effects' accessibility setting (iOS 26.4+), which tones down the Liquid Glass shimmer: the sweeping bright highlight that runs across Home Screen app icons and the flash on onscreen elements when you tap them. [Increases performance]",
+            detail: "开启系统「减弱明亮效果」辅助功能设置（iOS 26.4+），可减弱 Liquid Glass 的闪光：即掠过主屏幕应用图标的高亮扫光，以及轻点屏幕上元素时的闪光。[提升性能]",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -412,7 +412,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the thin glass outline drawn around Home Screen app icons in the Liquid Glass icon style. Best-guess SpringBoard key (unverified on-device; may have no effect). [Increases performance]",
+            detail: "移除 Liquid Glass 图标风格中绘制在主屏幕应用图标周围的细玻璃描边。为推测的 SpringBoard 键（未经真机验证，可能无效）。[提升性能]",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -420,7 +420,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableWidgetSpecular",
             section: .liquidGlass,
-            title: "Disable Widget Specular",
+            title: "停用小组件高光",
             location: .globalPreferences,
             key: "SBDisableWidgetSpecular",
             value: .bool(true),
@@ -433,7 +433,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the specular (glossy highlight) pass from Home Screen widget icons, so they no longer catch a moving highlight.",
+            detail: "移除主屏幕小组件图标的高光（光泽高亮）通道，使其不再随移动产生高亮。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -441,7 +441,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableDockSpecular",
             section: .liquidGlass,
-            title: "Disable Dock Specular",
+            title: "停用程序坞高光",
             location: .globalPreferences,
             key: "SBDisableDockSpecular",
             value: .bool(true),
@@ -454,7 +454,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the specular highlight from the Home Screen dock, leaving the glass material without its glossy sheen.",
+            detail: "移除主屏幕 Dock 的高光，使玻璃材质不再带有光泽。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -462,7 +462,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableFolderSpecular",
             section: .liquidGlass,
-            title: "Disable Folder Specular",
+            title: "停用文件夹高光",
             location: .globalPreferences,
             key: "SBDisableFolderSpecular",
             value: .bool(true),
@@ -475,7 +475,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the specular highlight from Home Screen folder backgrounds.",
+            detail: "移除主屏幕文件夹背景的高光。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -483,7 +483,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ExcludeClearGlassShadows",
             section: .liquidGlass,
-            title: "Exclude All Clear Glass Shadows",
+            title: "排除所有透明玻璃阴影",
             location: .globalPreferences,
             key: "SBExcludeAllClearGlassShadows",
             value: .bool(true),
@@ -496,7 +496,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Drops every shadow the Clear Glass material casts. Useful when the shadows make light wallpapers look muddy.",
+            detail: "去除透明玻璃材质投射的全部阴影。当阴影让浅色壁纸显得浑浊时很有用。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -504,7 +504,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ExcludeDockShadow",
             section: .liquidGlass,
-            title: "Exclude Dock Shadow",
+            title: "排除 Dock 阴影",
             location: .globalPreferences,
             key: "SBExcludeDockShadow",
             value: .bool(true),
@@ -517,7 +517,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the drop shadow under the Home Screen dock.",
+            detail: "移除主屏幕 Dock 下方的投影。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -525,7 +525,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ExcludeSearchShadow",
             section: .liquidGlass,
-            title: "Exclude Search Shadow",
+            title: "排除搜索阴影",
             location: .globalPreferences,
             key: "SBExcludeSearchShadow",
             value: .bool(true),
@@ -538,7 +538,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the drop shadow under the Home Screen search field.",
+            detail: "移除主屏幕搜索框下方的投影。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -546,7 +546,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "UseFlatIconsEverywhere",
             section: .liquidGlass,
-            title: "Use Flat Icons Everywhere",
+            title: "全面使用扁平图标",
             location: .globalPreferences,
             key: "SBUseFlatIconsEverywhere",
             value: .bool(true),
@@ -559,7 +559,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Draws Home Screen icons in the flat style instead of the glass/3D look.",
+            detail: "以扁平样式而非玻璃／3D 外观绘制主屏幕图标。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -567,7 +567,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "GlassContainerLogging",
             section: .liquidGlass,
-            title: "Glass Container Logging",
+            title: "玻璃容器日志",
             location: .globalPreferences,
             key: "com.apple.SwiftUI.GlassContainerLogging",
             value: .bool(true),
@@ -580,7 +580,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables glass container debug logging (com.apple.SwiftUI UserDefaults key).",
+            detail: "启用玻璃容器调试日志（com.apple.SwiftUI UserDefaults 键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -588,7 +588,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FlexiGlassMacOS",
             section: .liquidGlass,
-            title: "Flexi Glass (macOS path)",
+            title: "FlexiGlass（macOS 路径）",
             location: .globalPreferences,
             key: "com.apple.SwiftUI.FlexiGlassMacOS",
             value: .bool(true),
@@ -601,7 +601,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables FlexiGlass on the macOS-side rendering path (com.apple.SwiftUI UserDefaults key).",
+            detail: "在 macOS 侧渲染路径上启用 FlexiGlass（com.apple.SwiftUI UserDefaults 键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -609,7 +609,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FlexiGlassMacOSPointer",
             section: .liquidGlass,
-            title: "Flexi Glass (macOS Pointer)",
+            title: "Flexi Glass（macOS 指针）",
             location: .globalPreferences,
             key: "com.apple.SwiftUI.FlexiGlassMacOSPointer",
             value: .bool(true),
@@ -622,7 +622,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the pointer variant of FlexiGlass on the macOS-side path (com.apple.SwiftUI UserDefaults key).",
+            detail: "在 macOS 侧路径上启用 FlexiGlass 的指针变体（com.apple.SwiftUI UserDefaults 键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -630,7 +630,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "InvisibilitySuppressesGlass",
             section: .liquidGlass,
-            title: "Invisible View Suppresses Glass",
+            title: "不可见视图抑制玻璃效果",
             location: .globalPreferences,
             key: "com.apple.UIKit.InvisibilitySuppressesGlass",
             value: .bool(true),
@@ -643,7 +643,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "When enabled, invisible views suppress the glass effect applied to them (com.apple.UIKit UserDefaults key).",
+            detail: "启用后，不可见的视图会抑制施加在自身上的玻璃效果（com.apple.UIKit UserDefaults 键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -651,7 +651,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "EnableGlassEffectBridgeLayers",
             section: .liquidGlass,
-            title: "Enable Glass Effect Bridge Layers",
+            title: "启用玻璃效果桥接层",
             location: .globalPreferences,
             key: "EnableGlassEffectBridgeLayers",
             value: .bool(true),
@@ -664,7 +664,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables glass effect bridge layers (bare UserDefaults key, read via NSGlobalDomain fallback).",
+            detail: "启用玻璃效果桥接层（裸 UserDefaults 键，通过 NSGlobalDomain 回退读取）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -672,7 +672,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "EnableGaussianGlassEffectBridgeLayers",
             section: .liquidGlass,
-            title: "Enable Gaussian Glass Bridge Layers",
+            title: "启用高斯玻璃效果桥接层",
             location: .globalPreferences,
             key: "EnableGaussianGlassEffectBridgeLayers",
             value: .bool(true),
@@ -685,7 +685,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables gaussian glass effect bridge layers (bare UserDefaults key, read via NSGlobalDomain fallback).",
+            detail: "启用高斯玻璃效果桥接层（裸 UserDefaults 键，通过 NSGlobalDomain 回退读取）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -693,7 +693,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "UnifiedSystemBackgroundColorsEnabled",
             section: .liquidGlass,
-            title: "Unified System Background Colors",
+            title: "统一系统背景色",
             location: .globalPreferences,
             key: "UnifiedSystemBackgroundColorsEnabled",
             value: .bool(true),
@@ -706,7 +706,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables unified system background colors across the system (bare UserDefaults key, read via NSGlobalDomain fallback).",
+            detail: "在整个系统中启用统一的背景颜色（裸 UserDefaults 键，通过 NSGlobalDomain 回退读取）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -714,7 +714,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "UnaryGlassContainerEnabled",
             section: .liquidGlass,
-            title: "Unary Glass Container",
+            title: "一元玻璃容器",
             location: .globalPreferences,
             key: "UnaryGlassContainerEnabled",
             value: .bool(true),
@@ -727,7 +727,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the unary glass container (bare UserDefaults key, read via NSGlobalDomain fallback).",
+            detail: "启用一元玻璃容器（裸 UserDefaults 键，通过 NSGlobalDomain 回退读取）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -735,7 +735,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "EnableSolariumCompactChrome",
             section: .liquidGlass,
-            title: "Enable Solarium Compact Chrome",
+            title: "启用 Solarium 紧凑界面",
             location: .globalPreferences,
             key: "EnableSolariumCompactChrome",
             value: .bool(true),
@@ -748,7 +748,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables compact chrome in the Solarium renderer (UIKit debug cluster, bare UserDefaults key).",
+            detail: "在 Solarium 渲染器中启用紧凑界面（UIKit 调试簇，裸 UserDefaults 键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -756,7 +756,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableSolariumCompactChrome",
             section: .liquidGlass,
-            title: "Disable Solarium Compact Chrome",
+            title: "停用 Solarium 紧凑界面",
             location: .globalPreferences,
             key: "DisableSolariumCompactChrome",
             value: .bool(true),
@@ -769,7 +769,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Disables compact chrome in the Solarium renderer (UIKit debug cluster, bare UserDefaults key).",
+            detail: "在 Solarium 渲染器中禁用紧凑界面（UIKit 调试簇，裸 UserDefaults 键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -777,7 +777,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumIncreasedDiffusion",
             section: .liquidGlass,
-            title: "Increased Diffusion",
+            title: "增强扩散",
             location: .globalPreferences,
             key: "SolariumIncreasedDiffusion",
             value: .bool(true),
@@ -790,7 +790,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Increases the diffusion / legibility axis of the glass recipe, orthogonal to the tint amount.",
+            detail: "提高玻璃配方的漫射／可读性轴，与着色量相互独立。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -798,7 +798,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumUseDisplayAngle",
             section: .liquidGlass,
-            title: "Use Display Angle",
+            title: "使用显示角度",
             location: .globalPreferences,
             key: "SolariumUseDisplayAngle",
             value: .bool(true),
@@ -811,7 +811,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Uses the display angle to drive glass highlights.",
+            detail: "使用屏幕角度来驱动玻璃高光。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -819,7 +819,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumTintMask",
             section: .liquidGlass,
-            title: "Tint Mask",
+            title: "着色蒙版",
             location: .globalPreferences,
             key: "SolariumTintMask",
             value: .bool(true),
@@ -832,7 +832,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the Solarium tint mask.",
+            detail: "启用 Solarium 着色遮罩。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -840,7 +840,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumBackgroundFilter",
             section: .liquidGlass,
-            title: "Background Filter",
+            title: "背景滤镜",
             location: .globalPreferences,
             key: "SolariumBackgroundFilter",
             value: .bool(true),
@@ -853,7 +853,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the Solarium background filter.",
+            detail: "启用 Solarium 背景滤镜。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -861,7 +861,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumHighlightWhite",
             section: .liquidGlass,
-            title: "Highlight White Point",
+            title: "高光白点",
             location: .globalPreferences,
             key: "SolariumHighlightWhite",
             value: .double(1.0),
@@ -874,7 +874,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "White point of the glass highlight (0.0 to 1.0). Defaults to 1.0 (full white). Type inferred; unverified on-device.",
+            detail: "玻璃高光的白点（0.0 到 1.0）。默认为 1.0（纯白）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -882,7 +882,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumLiveTuning",
             section: .liquidGlass,
-            title: "Live Tuning",
+            title: "实时调校",
             location: .globalPreferences,
             key: "SolariumLiveTuning",
             value: .bool(true),
@@ -895,7 +895,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the Solarium live tuning switch — allows real-time glass parameter changes.",
+            detail: "启用 Solarium 实时调参开关 —— 允许实时修改玻璃参数。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -903,7 +903,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SolariumHierarchicalStyle",
             section: .liquidGlass,
-            title: "Solarium Hierarchical Style",
+            title: "Solarium 层级样式",
             location: .globalPreferences,
             key: "SolariumHierarchicalStyle",
             value: .int(1),
@@ -916,7 +916,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Sets the Solarium hierarchical glass style level (integer 0–10). Type inferred; unverified on-device.",
+            detail: "设置 Solarium 层级玻璃样式级别（整数 0–10）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -924,7 +924,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "GlassHierarchicalStyle",
             section: .liquidGlass,
-            title: "Glass Hierarchical Style",
+            title: "玻璃层级样式",
             location: .globalPreferences,
             key: "GlassHierarchicalStyle",
             value: .int(1),
@@ -937,7 +937,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Alternative entry for the hierarchical glass style level (integer 0–10). Type inferred; unverified on-device.",
+            detail: "层级玻璃样式级别的另一个入口（整数 0–10）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -945,7 +945,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "GlassVisualDebug",
             section: .liquidGlass,
-            title: "Glass Visual Debug",
+            title: "玻璃视觉调试",
             location: .globalPreferences,
             key: "GlassVisualDebug",
             value: .bool(true),
@@ -958,7 +958,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Overlays glass visual debug information on screen (debug/tuning key).",
+            detail: "在屏幕上叠加玻璃可视调试信息（调试／调参键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -966,7 +966,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "GlassVisualWarnings",
             section: .liquidGlass,
-            title: "Glass Visual Warnings",
+            title: "玻璃视觉警告",
             location: .globalPreferences,
             key: "GlassVisualWarnings",
             value: .bool(true),
@@ -979,7 +979,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Shows glass visual warnings overlay (debug/tuning key).",
+            detail: "显示玻璃可视警告叠加层（调试／调参键）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -987,7 +987,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "BlurFillExperiment",
             section: .liquidGlass,
-            title: "Blur Fill Experiment",
+            title: "模糊填充实验",
             location: .globalPreferences,
             key: "blurFillExperiment",
             value: .bool(true),
@@ -1000,7 +1000,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the blur fill experiment path (debug/tuning key, exact behavior unknown).",
+            detail: "启用模糊填充实验路径（调试／调参键，具体行为未知）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1008,7 +1008,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AdaptiveGlassHysteresisDarkRange",
             section: .liquidGlass,
-            title: "Adaptive Glass Hysteresis (Dark Range)",
+            title: "自适应玻璃迟滞（暗色范围）",
             location: .globalPreferences,
             key: "AdaptiveGlassHysteresisDarkRangeArray",
             value: .string(""),
@@ -1021,7 +1021,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Adaptive glass hysteresis dark range — list of floating-point thresholds. Type inferred as Array<Number>; written as text for this test UI, so may be ignored by the framework. Unverified on-device.",
+            detail: "自适应玻璃迟滞的暗色范围 —— 一组浮点阈值。类型推断为 Array<Number>；在此测试界面中以文本形式写入，因此框架可能忽略该值。未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1029,7 +1029,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AdaptiveGlassHysteresisLightRange",
             section: .liquidGlass,
-            title: "Adaptive Glass Hysteresis (Light Range)",
+            title: "自适应玻璃迟滞（亮色范围）",
             location: .globalPreferences,
             key: "AdaptiveGlassHysteresisLightRangeArray",
             value: .string(""),
@@ -1042,7 +1042,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Adaptive glass hysteresis light range — list of floating-point thresholds. Type inferred as Array<Number>; written as text for this test UI, so may be ignored by the framework. Unverified on-device.",
+            detail: "自适应玻璃迟滞的亮色范围 —— 一组浮点阈值。类型推断为 Array<Number>；在此测试界面中以文本形式写入，因此框架可能忽略该值。未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1050,7 +1050,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaLargeRefraction",
             section: .liquidGlass,
-            title: "Large Refraction (Calistoga)",
+            title: "大尺寸折射（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaLargeRefraction",
             value: .bool(true),
@@ -1063,7 +1063,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the large refraction effect (Calistoga = internal code name for the glass material).",
+            detail: "启用大折射效果（Calistoga = 该玻璃材质的内部代号）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1071,7 +1071,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaRegularClearer",
             section: .liquidGlass,
-            title: "Regular Tier Clearer (Calistoga)",
+            title: "常规层级更通透（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaRegularClearer",
             value: .bool(true),
@@ -1084,7 +1084,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Makes the regular tier glass render clearer (Calistoga).",
+            detail: "让常规档玻璃渲染得更加通透（Calistoga）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1092,7 +1092,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaBackdropMarginIncludesBlur",
             section: .liquidGlass,
-            title: "Backdrop Margin Includes Blur (Calistoga)",
+            title: "背景边缘包含模糊（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaBackdropMarginIncludesBlur",
             value: .bool(true),
@@ -1105,7 +1105,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Backdrop margin calculation includes the blur extent (Calistoga).",
+            detail: "背景边距的计算包含模糊范围（Calistoga）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1113,7 +1113,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaAllowLumaTracking",
             section: .liquidGlass,
-            title: "Allow Luma Tracking (Calistoga)",
+            title: "允许亮度跟踪（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaAllowLumaTracking",
             value: .bool(true),
@@ -1126,7 +1126,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Allows luminance (luma) tracking to drive glass adaptation (Calistoga).",
+            detail: "允许亮度（luma）跟踪来驱动玻璃自适应（Calistoga）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1134,7 +1134,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaSidebarAccentOpacity",
             section: .liquidGlass,
-            title: "Sidebar Accent Opacity (Calistoga)",
+            title: "边栏强调色不透明度（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaSidebarAccentOpacity",
             value: .double(1.0),
@@ -1147,7 +1147,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Opacity of the sidebar accent under the glass material (0.0–1.0, Calistoga). Type inferred; unverified on-device.",
+            detail: "玻璃材质下边栏强调色的不透明度（0.0–1.0，Calistoga）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1155,7 +1155,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaPerceptualBackdropScale",
             section: .liquidGlass,
-            title: "Perceptual Backdrop Scale (Calistoga)",
+            title: "感知背景缩放（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaPerceptualBackdropScale",
             value: .double(1.0),
@@ -1168,7 +1168,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Perceptual backdrop scale factor for the glass material (0.0–2.0, Calistoga). Type inferred; unverified on-device.",
+            detail: "玻璃材质的感知背景缩放系数（0.0–2.0，Calistoga）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1176,7 +1176,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaKeyboardGlass",
             section: .liquidGlass,
-            title: "Keyboard Glass (Calistoga)",
+            title: "键盘玻璃（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaKeyboardGlass",
             value: .bool(true),
@@ -1189,7 +1189,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Applies the glass material to the keyboard (Calistoga).",
+            detail: "将玻璃材质应用到键盘（Calistoga）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1197,7 +1197,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "CalistogaCameraGlass",
             section: .liquidGlass,
-            title: "Camera Glass (Calistoga)",
+            title: "相机玻璃（Calistoga）",
             location: .globalPreferences,
             key: "CalistogaCameraGlass",
             value: .bool(true),
@@ -1210,7 +1210,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Applies the glass material to the camera surface (Calistoga).",
+            detail: "将玻璃材质应用到相机界面（Calistoga）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1218,7 +1218,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewSpecularHighlightOpacity",
             section: .liquidGlass,
-            title: "Floating Specular Highlight Opacity",
+            title: "浮动高光不透明度",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewSpecularHighlightOpacity",
             value: .double(0.0),
@@ -1231,7 +1231,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Opacity of the specular highlight on floating content views (0 = off, 1 = full). Type inferred; unverified on-device.",
+            detail: "浮动内容视图上高光的不透明度（0 = 关闭，1 = 全亮）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1239,7 +1239,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewUnfocusedBorderOpacity",
             section: .liquidGlass,
-            title: "Floating Unfocused Border Opacity",
+            title: "浮动未聚焦边框不透明度",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewUnfocusedBorderOpacity",
             value: .double(0.0),
@@ -1252,7 +1252,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Opacity of the unfocused border on floating content views. Type inferred; unverified on-device.",
+            detail: "浮动内容视图上未聚焦边框的不透明度。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1260,7 +1260,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewUnfocusedBorderWidth",
             section: .liquidGlass,
-            title: "Floating Unfocused Border Width",
+            title: "浮动未聚焦边框宽度",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewUnfocusedBorderWidth",
             value: .double(1.0),
@@ -1273,7 +1273,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Width of the unfocused border on floating content views. Type inferred; unverified on-device.",
+            detail: "浮动内容视图上未聚焦边框的宽度。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1281,7 +1281,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewEnableBackgroundFills",
             section: .liquidGlass,
-            title: "Floating Background Fills",
+            title: "浮动背景填充",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewEnableBackgroundFills",
             value: .bool(true),
@@ -1294,7 +1294,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables background fills on floating content views.",
+            detail: "在浮动内容视图上启用背景填充。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1302,7 +1302,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewDebugBackgroundFills",
             section: .liquidGlass,
-            title: "Floating Debug Background Fills",
+            title: "浮动调试背景填充",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewDebugBackgroundFills",
             value: .bool(true),
@@ -1315,7 +1315,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables debug background fills on floating content views (debug variant of the above).",
+            detail: "在浮动内容视图上启用调试背景填充（上一项的调试变体）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1323,7 +1323,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewPunchoutShadow",
             section: .liquidGlass,
-            title: "Floating Punchout Shadow",
+            title: "浮动镂空阴影",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewPunchoutShadow",
             value: .bool(true),
@@ -1336,7 +1336,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables punchout shadow on floating content views.",
+            detail: "在浮动内容视图上启用镂空阴影。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1344,7 +1344,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewModifyTransformMode",
             section: .liquidGlass,
-            title: "Floating Transform Mode",
+            title: "浮动变换模式",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewModifyTransformMode",
             value: .int(1),
@@ -1357,7 +1357,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Transform mode for floating content view stacking (integer). Type inferred; unverified on-device.",
+            detail: "浮动内容视图堆叠的变换模式（整数）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1365,7 +1365,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewOverrideRotationX",
             section: .liquidGlass,
-            title: "Floating Override Rotation X",
+            title: "浮动覆盖旋转 X",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewOverrideRotationX",
             value: .double(0.0),
@@ -1378,7 +1378,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forced X-axis rotation for floating content views (degrees). Type inferred; unverified on-device.",
+            detail: "浮动内容视图的强制 X 轴旋转（角度）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1386,7 +1386,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewOverrideRotationY",
             section: .liquidGlass,
-            title: "Floating Override Rotation Y",
+            title: "浮动覆盖旋转 Y",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewOverrideRotationY",
             value: .double(0.0),
@@ -1399,7 +1399,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forced Y-axis rotation for floating content views (degrees). Type inferred; unverified on-device.",
+            detail: "浮动内容视图的强制 Y 轴旋转（角度）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1407,7 +1407,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewOverrideTranslationX",
             section: .liquidGlass,
-            title: "Floating Override Translation X",
+            title: "浮动覆盖位移 X",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewOverrideTranslationX",
             value: .double(0.0),
@@ -1420,7 +1420,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forced X-axis translation for floating content views (points). Type inferred; unverified on-device.",
+            detail: "浮动内容视图的强制 X 轴位移（点）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1428,7 +1428,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewOverrideTranslationY",
             section: .liquidGlass,
-            title: "Floating Override Translation Y",
+            title: "浮动覆盖位移 Y",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewOverrideTranslationY",
             value: .double(0.0),
@@ -1441,7 +1441,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forced Y-axis translation for floating content views (points). Type inferred; unverified on-device.",
+            detail: "浮动内容视图的强制 Y 轴位移（点）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1449,7 +1449,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewModifyRotationStrength",
             section: .liquidGlass,
-            title: "Floating Rotation Strength",
+            title: "浮动旋转强度",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewModifyRotationStrength",
             value: .double(1.0),
@@ -1462,7 +1462,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Multiplier for the rotation applied to floating content views. Type inferred; unverified on-device.",
+            detail: "浮动内容视图旋转的倍率。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1470,7 +1470,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FloatingContentViewModifyTranslationStrength",
             section: .liquidGlass,
-            title: "Floating Translation Strength",
+            title: "浮动平移强度",
             location: .globalPreferences,
             key: "UISolariumFloatingContentViewModifyTranslationStrength",
             value: .double(1.0),
@@ -1483,7 +1483,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Multiplier for the translation applied to floating content views. Type inferred; unverified on-device.",
+            detail: "浮动内容视图位移的倍率。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1491,7 +1491,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FocusSpecularHighlightMaxSize",
             section: .liquidGlass,
-            title: "Focus Specular Highlight Max Size",
+            title: "聚焦高光最大尺寸",
             location: .globalPreferences,
             key: "UISolariumFocusSpecularHighlightMaxSize",
             value: .double(1.0),
@@ -1504,7 +1504,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Maximum size of the focus specular highlight (0–1). Type inferred; unverified on-device.",
+            detail: "聚焦高光的最大尺寸（0–1）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1512,7 +1512,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FocusSpecularHighlightScaleFactor",
             section: .liquidGlass,
-            title: "Focus Specular Highlight Scale Factor",
+            title: "聚焦高光缩放系数",
             location: .globalPreferences,
             key: "UISolariumFocusSpecularHighlightScaleFactor",
             value: .double(1.0),
@@ -1525,7 +1525,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Scale factor of the focus specular highlight. Type inferred; unverified on-device.",
+            detail: "聚焦高光的缩放系数。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1533,7 +1533,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FocusSpecularHighlightSensitivity",
             section: .liquidGlass,
-            title: "Focus Specular Highlight Sensitivity",
+            title: "聚焦高光灵敏度",
             location: .globalPreferences,
             key: "UISolariumFocusSpecularHighlightSensitivity",
             value: .double(1.0),
@@ -1546,7 +1546,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Sensitivity of the focus specular highlight to focus changes. Type inferred; unverified on-device.",
+            detail: "聚焦高光对焦点变化的灵敏度。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1554,7 +1554,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FocusSpecularHighlightNormalizedPositionX",
             section: .liquidGlass,
-            title: "Focus Specular Highlight Position X",
+            title: "聚焦高光位置 X",
             location: .globalPreferences,
             key: "UISolariumFocusSpecularHighlightNormalizedPositionX",
             value: .double(0.5),
@@ -1567,7 +1567,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Normalized X position of the focus specular highlight (0–1). Type inferred; unverified on-device.",
+            detail: "聚焦高光的归一化 X 位置（0–1）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1575,7 +1575,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "FocusSpecularHighlightNormalizedPositionY",
             section: .liquidGlass,
-            title: "Focus Specular Highlight Position Y",
+            title: "聚焦高光位置 Y",
             location: .globalPreferences,
             key: "UISolariumFocusSpecularHighlightNormalizedPositionY",
             value: .double(0.5),
@@ -1588,7 +1588,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Normalized Y position of the focus specular highlight (0–1). Type inferred; unverified on-device.",
+            detail: "聚焦高光的归一化 Y 位置（0–1）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1596,7 +1596,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageRenderingEnabled",
             section: .liquidGlass,
-            title: "New Stacked Image Rendering",
+            title: "新版堆叠图像渲染",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageRenderingEnabled",
             value: .bool(true),
@@ -1609,7 +1609,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the new stacked image rendering pipeline for Home Screen icons (3D parallax layering).",
+            detail: "为主屏幕图标启用新版堆叠图像渲染管线（3D 视差分层）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1617,7 +1617,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageFiltersEnabled",
             section: .liquidGlass,
-            title: "Stacked Image Filters",
+            title: "堆叠图像滤镜",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageFiltersEnabled",
             value: .bool(true),
@@ -1630,7 +1630,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables image filters in the stacked image rendering pipeline.",
+            detail: "在堆叠图像渲染管线中启用图像滤镜。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1638,7 +1638,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImage3DTransformsEnabled",
             section: .liquidGlass,
-            title: "Stacked Image 3D Transforms",
+            title: "堆叠图像 3D 变换",
             location: .globalPreferences,
             key: "UISolariumNewStackedImage3DTransformsEnabled",
             value: .bool(true),
@@ -1651,7 +1651,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables 3D transforms in the stacked image rendering pipeline.",
+            detail: "在堆叠图像渲染管线中启用 3D 变换。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1659,7 +1659,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImage3DTransformedGlassLayer",
             section: .liquidGlass,
-            title: "Stacked Image 3D Glass Layer",
+            title: "堆叠图像 3D 玻璃层",
             location: .globalPreferences,
             key: "UISolariumNewStackedImage3DTransformedGlassLayer",
             value: .bool(true),
@@ -1672,7 +1672,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the 3D-transformed glass layer in the stacked image rendering pipeline.",
+            detail: "在堆叠图像渲染管线中启用经 3D 变换的玻璃层。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1680,7 +1680,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageSpecularEnabled",
             section: .liquidGlass,
-            title: "Stacked Image Specular",
+            title: "堆叠图像高光",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageSpecularEnabled",
             value: .bool(true),
@@ -1693,7 +1693,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables specular highlights on stacked images.",
+            detail: "在堆叠图像上启用高光。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1701,7 +1701,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageSpecularOpacity",
             section: .liquidGlass,
-            title: "Stacked Image Specular Opacity",
+            title: "堆叠图像高光不透明度",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageSpecularOpacity",
             value: .double(0.0),
@@ -1714,7 +1714,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Opacity of specular highlights on stacked images (0 = off). Type inferred; unverified on-device.",
+            detail: "堆叠图像上高光的不透明度（0 = 关闭）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1722,7 +1722,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageRadiosityEnabled",
             section: .liquidGlass,
-            title: "Stacked Image Radiosity",
+            title: "堆叠图像辐射度",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageRadiosityEnabled",
             value: .bool(true),
@@ -1735,7 +1735,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables radiosity (color bleed from nearby surfaces) in the stacked image pipeline.",
+            detail: "在堆叠图像管线中启用辐射着色（邻近表面的颜色渗染）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1743,7 +1743,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageForceAdjustMotionForSize",
             section: .liquidGlass,
-            title: "Stacked Image Adjust Motion for Size",
+            title: "堆叠图像按尺寸调整运动",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageForceAdjustMotionForSize",
             value: .bool(true),
@@ -1756,7 +1756,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces the stacked image motion adjustment to adapt to icon size.",
+            detail: "强制堆叠图像的运动调整随图标尺寸自适应。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1764,7 +1764,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageForceDefaultScaleSizeIncrease",
             section: .liquidGlass,
-            title: "Stacked Image Default Scale Increase",
+            title: "堆叠图像默认缩放增量",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageForceDefaultScaleSizeIncrease",
             value: .bool(true),
@@ -1777,7 +1777,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces the default scale size increase in the stacked image rendering.",
+            detail: "强制在堆叠图像渲染中增大默认缩放尺寸。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1785,7 +1785,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageInnerParallaxScale",
             section: .liquidGlass,
-            title: "Stacked Image Inner Parallax Scale",
+            title: "堆叠图像内部视差缩放",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageInnerParallaxScale",
             value: .double(1.0),
@@ -1798,7 +1798,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Inner parallax scale of the stacked image (0–1). Type inferred; unverified on-device.",
+            detail: "堆叠图像的内部视差缩放（0–1）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1806,7 +1806,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageAsymmetricScale",
             section: .liquidGlass,
-            title: "Stacked Image Asymmetric Scale",
+            title: "堆叠图像非对称缩放",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageAsymmetricScale",
             value: .double(1.0),
@@ -1819,7 +1819,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Asymmetric scale of the stacked image (controls non-uniform X/Y scaling). Type inferred; unverified on-device.",
+            detail: "堆叠图像的非对称缩放（控制 X／Y 轴的不等比缩放）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1827,7 +1827,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageProgressiveScale",
             section: .liquidGlass,
-            title: "Stacked Image Progressive Scale",
+            title: "堆叠图像渐进缩放",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageProgressiveScale",
             value: .double(1.0),
@@ -1840,7 +1840,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Progressive scale of the stacked image across depth layers. Type inferred; unverified on-device.",
+            detail: "堆叠图像在各深度层之间的渐进缩放。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1848,7 +1848,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageAdditionalTranslation",
             section: .liquidGlass,
-            title: "Stacked Image Additional Translation",
+            title: "堆叠图像附加平移",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageAdditionalTranslation",
             value: .double(0.0),
@@ -1861,7 +1861,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Additional translation applied to stacked images (points). Type inferred; unverified on-device.",
+            detail: "施加到堆叠图像上的附加位移（点）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1869,7 +1869,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NewStackedImageFocusedAdditionalScaleAmount",
             section: .liquidGlass,
-            title: "Stacked Image Focused Scale Amount",
+            title: "堆叠图像聚焦缩放量",
             location: .globalPreferences,
             key: "UISolariumNewStackedImageFocusedAdditionalScaleAmount",
             value: .double(1.0),
@@ -1882,7 +1882,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Additional scale applied to the focused stacked image. Type inferred; unverified on-device.",
+            detail: "施加到聚焦状态下堆叠图像上的附加缩放。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1890,7 +1890,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerDefaultMaxDepth",
             section: .liquidGlass,
-            title: "Stacked Container Max Depth",
+            title: "堆叠容器最大深度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerDefaultMaxDepth",
             value: .double(20.0),
@@ -1903,7 +1903,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Default maximum depth of the stacked image container (points). Type inferred; unverified on-device.",
+            detail: "堆叠图像容器的默认最大深度（点）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1911,7 +1911,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerDefaultRotationX",
             section: .liquidGlass,
-            title: "Stacked Container Default Rotation X",
+            title: "堆叠容器默认 X 轴旋转",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerDefaultRotationX",
             value: .double(0.0),
@@ -1924,7 +1924,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Default X-axis rotation of the stacked image container (degrees). Type inferred; unverified on-device.",
+            detail: "堆叠图像容器的默认 X 轴旋转（角度）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1932,7 +1932,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerDefaultRotationY",
             section: .liquidGlass,
-            title: "Stacked Container Default Rotation Y",
+            title: "堆叠容器默认 Y 轴旋转",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerDefaultRotationY",
             value: .double(0.0),
@@ -1945,7 +1945,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Default Y-axis rotation of the stacked image container (degrees). Type inferred; unverified on-device.",
+            detail: "堆叠图像容器的默认 Y 轴旋转（角度）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1953,7 +1953,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerDefaultTranslationX",
             section: .liquidGlass,
-            title: "Stacked Container Default Translation X",
+            title: "堆叠容器默认 X 轴平移",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerDefaultTranslationX",
             value: .double(0.0),
@@ -1966,7 +1966,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Default X-axis translation of the stacked image container (points). Type inferred; unverified on-device.",
+            detail: "堆叠图像容器的默认 X 轴位移（点）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1974,7 +1974,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerDefaultTranslationY",
             section: .liquidGlass,
-            title: "Stacked Container Default Translation Y",
+            title: "堆叠容器默认 Y 轴平移",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerDefaultTranslationY",
             value: .double(0.0),
@@ -1987,7 +1987,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Default Y-axis translation of the stacked image container (points). Type inferred; unverified on-device.",
+            detail: "堆叠图像容器的默认 Y 轴位移（点）。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -1995,7 +1995,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyMaxDepthStrength",
             section: .liquidGlass,
-            title: "Stacked Container Depth Strength",
+            title: "堆叠容器深度强度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyMaxDepthStrength",
             value: .double(1.0),
@@ -2008,7 +2008,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Multiplier for the maximum depth modification of the stacked image container. Type inferred; unverified on-device.",
+            detail: "堆叠图像容器最大深度修改的倍率。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2016,7 +2016,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyRotationStrength",
             section: .liquidGlass,
-            title: "Stacked Container Rotation Strength",
+            title: "堆叠容器旋转强度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyRotationStrength",
             value: .double(1.0),
@@ -2029,7 +2029,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Multiplier for the rotation modification of the stacked image container. Type inferred; unverified on-device.",
+            detail: "堆叠图像容器旋转修改的倍率。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2037,7 +2037,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyTranslationStrength",
             section: .liquidGlass,
-            title: "Stacked Container Translation Strength",
+            title: "堆叠容器平移强度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyTranslationStrength",
             value: .double(1.0),
@@ -2050,7 +2050,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Multiplier for the translation modification of the stacked image container. Type inferred; unverified on-device.",
+            detail: "堆叠图像容器位移修改的倍率。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2058,7 +2058,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyInnerParallaxScaleStrength",
             section: .liquidGlass,
-            title: "Stacked Container Parallax Strength",
+            title: "堆叠容器视差强度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyInnerParallaxScaleStrength",
             value: .double(1.0),
@@ -2071,7 +2071,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Multiplier for the inner parallax scale modification of the stacked image container. Type inferred; unverified on-device.",
+            detail: "堆叠图像容器内部视差缩放修改的倍率。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2079,7 +2079,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyTransformMinWidth",
             section: .liquidGlass,
-            title: "Stacked Container Transform Min Width",
+            title: "堆叠容器变换最小宽度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyTransformMinWidth",
             value: .double(0.0),
@@ -2092,7 +2092,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Minimum width threshold for triggering stacked image container transforms. Type inferred; unverified on-device.",
+            detail: "触发堆叠图像容器变换的最小宽度阈值。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2100,7 +2100,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyTransformMaxWidth",
             section: .liquidGlass,
-            title: "Stacked Container Transform Max Width",
+            title: "堆叠容器变换最大宽度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyTransformMaxWidth",
             value: .double(0.0),
@@ -2113,7 +2113,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Maximum width threshold for stacked image container transforms. Type inferred; unverified on-device.",
+            detail: "触发堆叠图像容器变换的最大宽度阈值。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2121,7 +2121,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyTransformMinHeight",
             section: .liquidGlass,
-            title: "Stacked Container Transform Min Height",
+            title: "堆叠容器变换最小高度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyTransformMinHeight",
             value: .double(0.0),
@@ -2134,7 +2134,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Minimum height threshold for triggering stacked image container transforms. Type inferred; unverified on-device.",
+            detail: "触发堆叠图像容器变换的最小高度阈值。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2142,7 +2142,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "StackedImageContainerModifyTransformMaxHeight",
             section: .liquidGlass,
-            title: "Stacked Container Transform Max Height",
+            title: "堆叠容器变换最大高度",
             location: .globalPreferences,
             key: "UISolariumStackedImageContainerModifyTransformMaxHeight",
             value: .double(0.0),
@@ -2155,7 +2155,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Maximum height threshold for stacked image container transforms. Type inferred; unverified on-device.",
+            detail: "触发堆叠图像容器变换的最大高度阈值。类型为推断得出；未在设备上验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2163,7 +2163,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "LockScreenFootnote",
             section: .springboard,
-            title: "Lock Screen Footnote Text",
+            title: "锁屏脚注文本",
             location: .footnote,
             key: "LockScreenFootnote",
             value: .string(""),
@@ -2176,7 +2176,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Sets custom text shown at the bottom of the Lock Screen below the time. Long text is cut off — keep it short. Leave empty to remove.",
+            detail: "设置显示在锁屏时间下方底部的自定义文字。文字过长会被截断 —— 请保持简短。留空则移除。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2184,7 +2184,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "WatchOSCompatibility",
             section: .springboard,
-            title: "Allow pairing with any watchOS version",
+            title: "允许与任意 watchOS 版本配对",
             location: .nanoregistry,
             key: "",
             value: .bool(true),
@@ -2197,7 +2197,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: true,
             disabled: false,
-            detail: "Removes the minimum watchOS pairing check in NanoRegistry so you can pair an Apple Watch running any watchOS version with your iPhone.",
+            detail: "移除 NanoRegistry 中的 watchOS 最低版本配对检查，使你可以将运行任意 watchOS 版本的 Apple Watch 与 iPhone 配对。",
             multiValues: [
                 "IOS_PAIRING_EOL_MIN_PAIRING_COMPATIBILITY_VERSION_CHIPIDS": .string(""),
                 "maxPairingCompatibilityVersion": .int(37),
@@ -2213,7 +2213,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AirDropDisableTimeLimit",
             section: .springboard,
-            title: "Disable AirDrop Time Limit for Everyone Option",
+            title: "解除 AirDrop「所有人」时限",
             location: .airdrop,
             key: "OverrideTimeLimitEveryoneMode",
             value: .bool(true),
@@ -2226,7 +2226,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Unlocks the hidden 'Everyone' AirDrop receiving option that would normally be limited to a 10-minute time window.",
+            detail: "解锁隐藏的 AirDrop「所有人」接收选项，该选项通常被限制为 10 分钟的时间窗口。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2234,7 +2234,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBDontLockAfterCrash",
             section: .springboard,
-            title: "Disable Lock After Respring",
+            title: "停用重启界面后锁定",
             location: .springboard,
             key: "SBDontLockAfterCrash",
             value: .bool(true),
@@ -2247,7 +2247,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Prevents the screen from locking right after a respring — the phone won't ask for a passcode immediately after the UI reloads.",
+            detail: "防止屏幕在重启界面后立刻锁定 —— 界面重新加载后手机不会立即要求输入密码。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2255,7 +2255,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBDontDimOrLockOnAC",
             section: .springboard,
-            title: "Disable Screen Dimming While Charging",
+            title: "停用充电时屏幕变暗",
             location: .springboard,
             key: "SBDontDimOrLockOnAC",
             value: .bool(true),
@@ -2268,7 +2268,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Stops the display from auto-dimming while the device is connected to a charger.",
+            detail: "设备连接充电器时，显示屏不再自动变暗。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2276,7 +2276,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBHideLowPowerAlerts",
             section: .springboard,
-            title: "Disable Low Battery Alerts",
+            title: "停用低电量提醒",
             location: .springboard,
             key: "SBHideLowPowerAlerts",
             value: .bool(true),
@@ -2289,7 +2289,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Suppresses the 'Low Battery — 20% / 10%' system alerts.",
+            detail: "抑制「电量不足 —— 20%／10%」系统提醒。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2297,7 +2297,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBHideACPower",
             section: .springboard,
-            title: "Hide AC Power on Lock Screen",
+            title: "在锁屏隐藏交流电源",
             location: .springboard,
             key: "SBHideACPower",
             value: .bool(true),
@@ -2310,7 +2310,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Hides the charging status from the Lock Screen while the device is plugged into AC power.",
+            detail: "设备接入电源时，在锁屏上隐藏充电状态。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2318,7 +2318,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBNeverBreadcrumb",
             section: .springboard,
-            title: "Disable Breadcrumbs",
+            title: "停用返回路径按钮",
             location: .springboard,
             key: "SBNeverBreadcrumb",
             value: .bool(true),
@@ -2331,7 +2331,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Disables the 'Return to <App>' breadcrumb button that appears in the status bar after opening a link from another app.",
+            detail: "关闭从其他应用打开链接后出现在状态栏中的「返回 <App>」面包屑按钮。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2339,7 +2339,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBShowSupervisionTextOnLockScreen",
             section: .springboard,
-            title: "Show Supervision Text on Lock Screen",
+            title: "在锁屏显示监管文本",
             location: .springboard,
             key: "SBShowSupervisionTextOnLockScreen",
             value: .bool(true),
@@ -2352,7 +2352,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Shows the device-supervision text on the Lock Screen, like the '<Device> is supervised by <org>' label seen on MDM-managed devices.",
+            detail: "在锁屏上显示设备监管文字，形如在受 MDM 管理的设备上看到的「<设备> 由 <组织> 监管」标签。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2360,7 +2360,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AirplaySupport",
             section: .springboard,
-            title: "Enable AirPlay support for Stage Manager",
+            title: "为台前调度启用 AirPlay",
             location: .springboard,
             key: "SBExtendedDisplayOverrideSupportForAirPlayAndDontFileRadars",
             value: .bool(true),
@@ -2373,7 +2373,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Adds extended-display AirPlay support for Stage Manager so apps and external displays can use the feature more broadly.",
+            detail: "为台前调度添加扩展显示 AirPlay 支持，使应用和外接显示器能更广泛地使用该功能。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2381,7 +2381,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBMinimumLockscreenIdleTime",
             section: .springboard,
-            title: "Auto‑Lock (Lock Screen)",
+            title: "自动锁定（锁屏）",
             location: .springboard,
             key: "SBMinimumLockscreenIdleTime",
             value: .int(5),
@@ -2394,7 +2394,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Sets how many minutes of inactivity before the Lock Screen turns the display off. 0 = never auto-lock.",
+            detail: "设置无操作多少分钟后锁屏关闭显示屏。0 = 从不自动锁定。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2402,7 +2402,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBAlwaysShowSystemApertureInSnapshots",
             section: .springboard,
-            title: "Show Dynamic Island in Screenshots",
+            title: "在截图中显示灵动岛",
             location: .springboard,
             key: "SBAlwaysShowSystemApertureInSnapshots",
             value: .bool(true),
@@ -2415,7 +2415,7 @@ enum TweakCatalog {
             iphoneOnly: true,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces the Dynamic Island to appear in screenshots instead of being hidden or shrunk while the screenshot is taken.",
+            detail: "强制在截图中显示灵动岛，而不是在截图时将其隐藏或缩小。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: true
@@ -2444,7 +2444,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBShowAuthenticationEngineeringUI",
             section: .springboard,
-            title: "Show Red/Green Authentication Line on Lock Screen",
+            title: "在锁屏上显示红/绿验证线",
             location: .springboard,
             key: "SBShowAuthenticationEngineeringUI",
             value: .bool(true),
@@ -2457,7 +2457,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Shows a red/green authentication progress indicator on the Lock Screen while Face ID or passcode checks are running (engineering debug UI).",
+            detail: "在进行 Face ID 或密码校验时，在锁屏上显示红／绿的认证进度指示（工程调试界面）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2465,7 +2465,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "UseFloatingTabBar",
             section: .springboard,
-            title: "Disable Floating Tab Bar",
+            title: "停用浮动标签栏",
             location: .uikit,
             key: "UseFloatingTabBar",
             value: .bool(false),
@@ -2486,7 +2486,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBDisableIconParallax",
             section: .springboard,
-            title: "Disable Icon Parallax",
+            title: "停用图标视差",
             location: .springboard,
             key: "SBDisableParallax",
             value: .bool(true),
@@ -2499,7 +2499,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Stops Home Screen icons from shifting with the device tilt (the parallax effect). Pair with Disable Icon Page-Control Parallax for a fully static Home Screen.",
+            detail: "阻止主屏幕图标随设备倾斜而偏移（视差效果）。与「禁用图标分页控件视差」搭配可得到完全静止的主屏幕。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2507,7 +2507,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBHideSearchAffordance",
             section: .springboard,
-            title: "Hide Search Button on Home Screen",
+            title: "在主屏幕上隐藏搜索按钮",
             location: .springboard,
             key: "SBHomeScreenShowsSearchAffordance",
             value: .bool(false),
@@ -2520,7 +2520,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes the search button below the icons on the Home Screen (the faint search bar/icon above the Dock). Enabled when the switch is ON.",
+            detail: "移除主屏幕图标下方的搜索按钮（Dock 上方那个淡淡的搜索条／图标）。开关开启时本项生效。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2528,7 +2528,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBShowRSSI",
             section: .internalOptions,
-            title: "Show RSSI (Experimental)",
+            title: "显示 RSSI（实验性）",
             location: .springboard,
             key: "SBShowRSSI",
             value: .bool(true),
@@ -2541,7 +2541,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Requests the SpringBoard RSSI (signal strength) debug indicator. Preference reading was verified in the iOS 26.5 simulator and the key is present in iOS 27.0.1. A visible indicator and support on physical devices are not yet verified.",
+            detail: "请求 SpringBoard 的 RSSI（信号强度）调试指示器。偏好读取已在 iOS 26.5 模拟器中验证，该键在 iOS 27.0.1 中存在。指示器可见性与真机支持尚未验证。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2549,7 +2549,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBBuildNumber",
             section: .internalOptions,
-            title: "Show Build Version in Status Bar",
+            title: "在状态栏中显示构建版本",
             location: .globalPreferences,
             key: "UIStatusBarShowBuildVersion",
             value: .bool(true),
@@ -2562,7 +2562,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Displays the iOS build number (e.g. 21A5284a) in the status bar next to the iOS version.",
+            detail: "在状态栏中 iOS 版本号旁边显示 iOS 构建号（例如 21A5284a）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2570,7 +2570,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "RTL",
             section: .internalOptions,
-            title: "Force Right-to-Left Layout",
+            title: "强制从右到左布局",
             location: .globalPreferences,
             key: "NSForceRightToLeftWritingDirection",
             value: .bool(true),
@@ -2583,7 +2583,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces a right-to-left layout for the entire system, mirroring the UI as if your primary language were RTL.",
+            detail: "强制整个系统使用从右到左的布局，如同你的主语言是 RTL 语言那样镜像界面。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2591,7 +2591,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "LTR",
             section: .internalOptions,
-            title: "Force Left-to-Right Layout",
+            title: "强制从左到右布局",
             location: .globalPreferences,
             key: "NSForceLeftToRightWritingDirection",
             value: .bool(true),
@@ -2604,7 +2604,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Forces a left-to-right layout across the whole system regardless of the RTL language setting.",
+            detail: "无论 RTL 语言设置如何，强制整个系统使用从左到右的布局。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2612,7 +2612,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "SBIconVisibility",
             section: .internalOptions,
-            title: "Show Hidden Icons on Home Screen",
+            title: "在主屏幕上显示隐藏的图标",
             location: .globalPreferences,
             key: "SBIconVisibility",
             value: .bool(true),
@@ -2625,7 +2625,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Reveals hidden or disabled Home Screen icons, including internal placeholder icons that are normally not drawn.",
+            detail: "显示被隐藏或停用的主屏幕图标，包括通常不会绘制的内部占位图标。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2633,7 +2633,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "iMessageDiagnosticsEnabled",
             section: .internalOptions,
-            title: "iMessage Debugging",
+            title: "iMessage 调试",
             location: .globalPreferences,
             key: "iMessageDiagnosticsEnabled",
             value: .bool(true),
@@ -2646,7 +2646,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the iMessage engineering debug menu / diagnostics inside the Messages app.",
+            detail: "在「信息」应用中启用 iMessage 工程调试菜单／诊断。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2654,7 +2654,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "IDSDiagnosticsEnabled",
             section: .internalOptions,
-            title: "Continuity Debugging",
+            title: "连续互通调试",
             location: .globalPreferences,
             key: "IDSDiagnosticsEnabled",
             value: .bool(true),
@@ -2667,7 +2667,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the Continuity engineering debug diagnostics in Settings (Apple ID and related sections).",
+            detail: "在「设置」中启用连续互通工程调试诊断（Apple ID 及相关分区）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2675,7 +2675,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "VCDiagnosticsEnabled",
             section: .internalOptions,
-            title: "FaceTime Debugging",
+            title: "FaceTime 调试",
             location: .globalPreferences,
             key: "VCDiagnosticsEnabled",
             value: .bool(true),
@@ -2688,7 +2688,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables FaceTime / VoIP engineering debug diagnostics.",
+            detail: "启用 FaceTime／VoIP 工程调试诊断。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2696,7 +2696,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AccessoryDeveloperEnabled",
             section: .internalOptions,
-            title: "Show Accessory Developer Settings",
+            title: "显示配件开发者设置",
             location: .globalPreferences,
             key: "AccessoryDeveloperEnabled",
             value: .bool(true),
@@ -2709,7 +2709,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Adds a hidden Accessory Developer settings page to the Settings app for testing accessories.",
+            detail: "在「设置」应用中添加隐藏的配件开发者设置页面，用于测试配件。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2717,7 +2717,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableSecondsHand",
             section: .internalOptions,
-            title: "Disable Clock Icon Seconds Hand",
+            title: "停用时钟图标秒针",
             location: .globalPreferences,
             key: "SBDisableClockIconSecondsHand",
             value: .bool(true),
@@ -2730,7 +2730,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Stops the animated second hand on the Clock app's Home Screen icon.",
+            detail: "停止「时钟」应用主屏幕图标上走动的秒针。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2738,7 +2738,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "DisableSearchingWebsites",
             section: .internalOptions,
-            title: "Disable Spotlight Searching in Websites",
+            title: "停用网站中的 Spotlight 搜索",
             location: .globalPreferences,
             key: "SBSearchDisabledDomains",
             value: .bool(true),
@@ -2751,7 +2751,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Removes website / web search results from Spotlight search suggestions.",
+            detail: "从 Spotlight 搜索建议中移除网站／网页搜索结果。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2759,7 +2759,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "ShowButtonHints",
             section: .internalOptions,
-            title: "Show Hardware Button Hints in Screenshots",
+            title: "在截图中显示硬件按钮提示",
             location: .globalPreferences,
             key: "SBHardwareButtonHintDropletsAlwaysVisibleInSnapshots",
             value: .bool(true),
@@ -2772,7 +2772,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Shows the side button / action button hint labels in screenshots (engineering debug UI).",
+            detail: "在截图中显示侧边按钮／操作按钮的提示标签（工程调试界面）。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2780,7 +2780,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AppStoreDebug",
             section: .internalOptions,
-            title: "App Store Debug Gesture",
+            title: "App Store 调试手势",
             location: .appStore,
             key: "debugGestureEnabled",
             value: .bool(true),
@@ -2793,7 +2793,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Enables the hidden debug gesture in the App Store app, used to dump store data and inspect the store backend.",
+            detail: "在 App Store 应用中启用隐藏的调试手势，用于导出商店数据并检查商店后端。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2801,7 +2801,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "NotesDebugMode",
             section: .internalOptions,
-            title: "Notes Debug Mode",
+            title: "备忘录调试模式",
             location: .notes,
             key: "DebugModeEnabled",
             value: .bool(true),
@@ -2814,7 +2814,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Turns on the Notes app debug menu for engineering debugging.",
+            detail: "开启「备忘录」应用的调试菜单，用于工程调试。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2822,7 +2822,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "BKDigitizerVisualizeTouches",
             section: .internalOptions,
-            title: "Show Touches With Debug Info",
+            title: "显示触摸点及调试信息",
             location: .backboardd,
             key: "BKDigitizerVisualizeTouches",
             value: .bool(true),
@@ -2835,7 +2835,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Visually marks every touch point on the screen with debugging information as you touch. Great for diagnosing touch issues.",
+            detail: "在你触摸时用调试信息在屏幕上标出每一个触摸点。非常适合诊断触摸问题。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2843,7 +2843,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "BKHideAppleLogoOnLaunch",
             section: .internalOptions,
-            title: "Hide Respring Icon",
+            title: "隐藏重启界面图标",
             location: .backboardd,
             key: "BKHideAppleLogoOnLaunch",
             value: .bool(true),
@@ -2856,7 +2856,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Hides the Apple logo animation during respring, showing a black screen instead until the UI comes back.",
+            detail: "在重启界面时隐藏 Apple 标志动画，改为显示黑屏，直到界面恢复。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2864,7 +2864,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "EnableWakeGestureHaptic",
             section: .internalOptions,
-            title: "Vibrate on Raise-to-Wake",
+            title: "抬起唤醒时振动",
             location: .coreMotion,
             key: "EnableWakeGestureHaptic",
             value: .bool(true),
@@ -2877,7 +2877,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Plays a Taptic Engine vibration when the device wakes via the raise-to-wake gesture.",
+            detail: "设备通过抬腕唤醒手势点亮时，触发一次 Taptic Engine 振动。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2885,7 +2885,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "PlaySoundOnPaste",
             section: .internalOptions,
-            title: "Play Sound on Paste",
+            title: "粘贴时播放声音",
             location: .pasteboard,
             key: "PlaySoundOnPaste",
             value: .bool(true),
@@ -2898,7 +2898,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Plays a sound every time content is pasted anywhere on the device.",
+            detail: "每当在设备上任意位置粘贴内容时播放提示音。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false
@@ -2906,7 +2906,7 @@ enum TweakCatalog {
         TweakSpec(
             id: "AnnounceAllPastes",
             section: .internalOptions,
-            title: "Show Notifications for System Pastes",
+            title: "系统粘贴时显示通知",
             location: .pasteboard,
             key: "AnnounceAllPastes",
             value: .bool(true),
@@ -2919,7 +2919,7 @@ enum TweakCatalog {
             iphoneOnly: false,
             ipadOnly: false,
             disabled: false,
-            detail: "Shows a system notification whenever an app reads the pasteboard, acting as a privacy indicator for system-level pastes.",
+            detail: "每当有应用读取剪贴板时显示系统通知，作为系统级粘贴的隐私指示。",
             multiValues: nil,
             reversibleBoolean: false,
             requiresDynamicIsland: false

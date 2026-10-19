@@ -79,7 +79,7 @@ struct TweakPayload: Equatable {
     var label: String { "\(domain)/\(relativePath)" }
 
     /// Where the bytes come from, for a log line.
-    var origin: String { source?.lastPathComponent ?? "\(contents.count) B in memory" }
+    var origin: String { source?.lastPathComponent ?? "内存中 \(contents.count) B" }
 
     /// The bytes, mapped rather than copied when they are on disk.
     ///
@@ -117,7 +117,7 @@ struct TweakPayloadUnavailable: Error, LocalizedError {
     let reason: String
 
     var errorDescription: String? {
-        "The payload for \(payload) is gone from disk (\(file)): \(reason)"
+        "\(payload) 的载荷已从磁盘消失（\(file)）：\(reason)"
     }
 }
 
@@ -187,7 +187,7 @@ enum TweakCompiler {
             guard selection.isOn(spec) || spec.reversibleBoolean else { continue }
             guard spec.isCompatible(deviceVersion: deviceVersion, isIPhone: isIPhone, deviceModel: deviceModel) else {
                 if selection.isOn(spec) {
-                    skipped.append((spec.id, "not compatible with this device / iOS version"))
+                    skipped.append((spec.id, "与此设备 / iOS 版本不兼容"))
                 }
                 continue
             }
@@ -223,7 +223,7 @@ enum TweakCompiler {
             }
 
             guard !spec.key.isEmpty else {
-                skipped.append((spec.id, "registry entry has no plist key"))
+                skipped.append((spec.id, "注册表条目没有 plist 键"))
                 continue
             }
             if plists[spec.location] == nil { order.append(spec.location) }
@@ -239,7 +239,7 @@ enum TweakCompiler {
         for location in order {
             if nullified.contains(location) {
                 guard let dest = TweakDomainMap.split(path: location.rawValue) else {
-                    skipped.append((location.rawValue, "no backup-domain prefix matches this location"))
+                    skipped.append((location.rawValue, "没有任何备份域前缀与此位置匹配"))
                     continue
                 }
                 payloads.append(TweakPayload(domain: dest.domain,
@@ -255,7 +255,7 @@ enum TweakCompiler {
             // absolute path), which would inject a row no device ever produced.
             // Refusing instead of reproducing that is deliberate.
             guard let dest = TweakDomainMap.split(path: location.rawValue) else {
-                skipped.append((location.rawValue, "no backup-domain prefix matches this location"))
+                skipped.append((location.rawValue, "没有任何备份域前缀与此位置匹配"))
                 continue
             }
             payloads.append(TweakPayload(domain: dest.domain,

@@ -167,18 +167,18 @@ enum HostManifests {
         let infoURL = deviceDir.appendingPathComponent("Info.plist")
         if !fm.fileExists(atPath: infoURL.path) || applications != nil {
             var info: [String: Any] = [
-                "Unique Identifier": udid.uppercased(),
-                "Target Type": "Device",
-                "Target Identifier": udid,
-                "Build Version": "",
-                "Product Version": "",
-                "Product Type": "",
-                "Serial Number": "",
+                "唯一标识符": udid.uppercased(),
+                "目标类型": "Device",
+                "目标标识符": udid,
+                "构建版本": "",
+                "产品版本": "",
+                "产品类型": "",
+                "序列号": "",
                 "Applications": [:],
             ]
             if let applications, !applications.isEmpty {
                 info["Applications"] = applications
-                info["Installed Applications"] = applications.keys.sorted()
+                info["已安装的应用程序"] = applications.keys.sorted()
             }
             if let data = try? PropertyListSerialization.data(fromPropertyList: info,
                                                               format: .xml, options: 0) {
@@ -210,10 +210,10 @@ enum HostManifests {
 
         var db: OpaquePointer?
         guard sqlite3_open(url.path, &db) == SQLITE_OK, let db else {
-            let why = db.map { String(cString: sqlite3_errmsg($0)) } ?? "cannot open"
+            let why = db.map { String(cString: sqlite3_errmsg($0)) } ?? "无法打开"
             sqlite3_close(db)
             throw NSError(domain: "HostManifests", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: "Manifest.db: \(why)"])
+                          userInfo: [NSLocalizedDescriptionKey: "Manifest.db：\(why)"])
         }
         defer { sqlite3_close(db) }
 
@@ -232,7 +232,7 @@ enum HostManifests {
             """, nil, nil, nil) == SQLITE_OK else {
             throw NSError(domain: "HostManifests", code: 2,
                           userInfo: [NSLocalizedDescriptionKey:
-                            "Manifest.db schema: \(String(cString: sqlite3_errmsg(db)))"])
+                            "Manifest.db 模式：\(String(cString: sqlite3_errmsg(db)))"])
         }
 
         let properties: [(String, String)] = [
@@ -249,7 +249,7 @@ enum HostManifests {
         guard prepared == SQLITE_OK, let insert else {
             throw NSError(domain: "HostManifests", code: 3,
                           userInfo: [NSLocalizedDescriptionKey:
-                            "Manifest.db properties: \(String(cString: sqlite3_errmsg(db)))"])
+                            "Manifest.db 属性：\(String(cString: sqlite3_errmsg(db)))"])
         }
         for (key, value) in properties {
             sqlite3_reset(insert)
@@ -259,7 +259,7 @@ enum HostManifests {
             guard sqlite3_step(insert) == SQLITE_DONE else {
                 throw NSError(domain: "HostManifests", code: 4,
                               userInfo: [NSLocalizedDescriptionKey:
-                                "Manifest.db property \(key): \(String(cString: sqlite3_errmsg(db)))"])
+                                "Manifest.db 属性 \(key)：\(String(cString: sqlite3_errmsg(db)))"])
             }
         }
 

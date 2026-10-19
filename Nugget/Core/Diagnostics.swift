@@ -13,19 +13,19 @@ enum Diagnostics {
     /// log alone tells us where the failure lives.
     static func report() async -> String {
         let minimuxer = Minimuxer.shared()
-        var lines: [String] = ["── diagnostics ──"]
+        var lines: [String] = ["── 诊断 ──"]
 
         // Snapshot the Rust evidence FIRST.
         let logStatus = RustLog.status()
         let excerpt = RustLog.excerpt()
         let tail = RustLog.tail(30, since: RustLog.mark)
 
-        lines.append("  tunnel: \(Tunnel.describe())")
+        lines.append("  隧道：\(Tunnel.describe())")
         // The one field a user gets wrong, with the value that fixes it.  A dump
         // that says "tunnel not detected" and nothing else sends the reader to
         // the VPN app, where the rejection they get back ("only allows a prefix
         // length from 0 to 32") does not name the field or the expected value.
-        lines.append("  tunnel requires: \(Tunnel.requirements)")
+        lines.append("  隧道要求：\(Tunnel.requirements)")
         // What the library itself resolved, when it said anything: the app's
         // probe and the Rust connection manager have to be looking at the same
         // pair of addresses, and before this was recorded nothing in a dump
@@ -33,46 +33,46 @@ enum Diagnostics {
         if let resolved = Tunnel.reported.line {
             lines.append("  \(resolved)")
         }
-        lines.append("  peer \(Tunnel.peerIP):\(Tunnel.servicePort) reachable: \(Tunnel.probePeer())")
+        lines.append("  对端 \(Tunnel.peerIP):\(Tunnel.servicePort) 可达性：\(Tunnel.probePeer())")
         if let gw = minimuxer.ideviceGateway {
-            lines.append("  gateway endpoint IP: \(gw.deviceEndpointIp ?? "nil")")
+            lines.append("  网关端点 IP：\(gw.deviceEndpointIp ?? "nil")")
         } else {
-            lines.append("  gateway: not IdeviceGateway")
+            lines.append("  网关：不是 IdeviceGateway")
         }
-        lines.append("  pairing type: \(minimuxer.core.getPairingFileType())")
+        lines.append("  配对类型：\(minimuxer.core.getPairingFileType())")
         // Proves whether RSD itself survived: if this works while mobilebackup2
         // keeps dying, the drop is mobilebackup2-specific (device side), not
         // the tunnel.
         let udid = try? await minimuxer.core.fetchUDID()
-        lines.append("  lockdown fetchUDID: \(udid.flatMap { $0 } ?? "FAILED")")
+        lines.append("  lockdown fetchUDID：\(udid.flatMap { $0 } ?? "FAILED")")
         switch await minimuxer.core.isReady(withNetworkCheck: true) {
         case .success(let ready):
-            lines.append("  isReady: \(ready)")
+            lines.append("  isReady：\(ready)")
         case .failure(let error):
-            lines.append("  isReady: FAILED — \(minimuxer.core.describeError(error))")
+            lines.append("  isReady: 失败 — \(minimuxer.core.describeError(error))")
         }
-        lines.append("  rust log: \(logStatus)")
+        lines.append("  Rust 日志：\(logStatus)")
         // Wire liveness: how many DeviceLink messages this run actually moved.
         // A run that "hung at N %" is one number away from being diagnosable —
         // zero messages means the device never engaged, thousands means it was
         // working and the silence came later.
         lines.append("  wire: \(WireCensus.healthLine())")
         let encrypt = await backupEncryptionEnabled()
-        lines.append("  backup encryption (com.apple.mobile.backup/WillEncrypt): "
-            + (encrypt.map { $0 ? "ON — premise broken (encrypted Manifest.db)" : "off" } ?? "unknown"))
+        lines.append("  备份加密（com.apple.mobile.backup/WillEncrypt）："
+            + (encrypt.map { $0 ? "开启 —— 前提被破坏（Manifest.db 已加密）" : "off" } ?? "unknown"))
         // Keyword slice first (the actual evidence), raw tail last (proves the
         // sink is live and shows an unclassified failure).  Both were captured
         // before the probes above wrote a single line.
         lines.append(excerpt)
-        lines.append("  rust log raw tail (last 30 lines):\n\(tail)")
+        lines.append("  Rust 日志原始末尾（最后 30 行）：\n\(tail)")
         // The host-side half of the story only exists in the app log: which
         // files the filter kept, the commit/move accounting, the staging-tree
         // verdict.  Without it a shared diagnostics.txt cannot distinguish "the
         // device refused" from "we refused the device".
         let memory = AppLog.shared.memory
-        lines.append("  app log tail (last 80 of \(memory.count) lines, full file: goldennugget.log):\n"
+        lines.append("  应用日志末尾（共 \(memory.count) 行中的最后 80 行，完整文件：goldennugget.log）：\n"
             + memory.tail(80))
-        lines.append("── end diagnostics ──")
+        lines.append("── 诊断结束 ──")
 
         let block = lines.joined(separator: "\n")
         // Persist next to the log so it can be shared as a FILE (AirDrop / Save
@@ -98,18 +98,18 @@ enum Diagnostics {
     ///     could not answer.
     static func deviceLivenessProbe() async -> (alive: Bool, detail: String) {
         guard let gateway = Minimuxer.shared().ideviceGateway else {
-            return (true, "no gateway to probe with — treating the device as alive")
+            return (true, "没有可用于探测的网关 —— 将设备视为在线")
         }
         let answer: Bool? = await AsyncRacing.withDeadline(seconds: 8, fallback: { nil }) {
             await Task.detached(priority: .utility) { gateway.probeLockdownAlive() }.value
         }
         switch answer {
         case .some(true):
-            return (true, "lockdown answered on the existing RSD session — device and tunnel are alive")
+            return (true, "lockdown 在现有 RSD 会话上已应答 —— 设备与隧道均在线")
         case .some(false):
-            return (false, "lockdown did not answer on the existing RSD session — the device or tunnel is gone")
+            return (false, "lockdown 未在现有 RSD 会话上应答 —— 设备或隧道已断开")
         case .none:
-            return (true, "the lockdown probe did not answer within 8s — inconclusive, so the run is kept alive")
+            return (true, "lockdown 探测在 8 秒内没有应答 —— 结果不确定，因此本次运行继续保留")
         }
     }
 
@@ -150,11 +150,11 @@ enum Diagnostics {
                 Backup, or clear it on the device page in Finder/iTunes, then run again.
                 """)
         case .some(false):
-            AppLog.write("preflight: encrypted local backup = OFF (plaintext Manifest.db, "
-                         + "premise holds)")
+            AppLog.write("预检：本地备份加密 = 关闭（Manifest.db 为明文，前提成立）"
+                         + "")
         case .none:
-            AppLog.write("preflight: WillEncrypt could not be read (domain/key unavailable) "
-                         + "— continuing, but note that an encrypted backup breaks prune/inject")
+            AppLog.write("预检：无法读取 WillEncrypt（域／键不可用）—— 继续执行，但请注意加密备份会破坏清理／注入流程"
+                         + "")
         }
     }
 }

@@ -56,7 +56,7 @@ struct TweakRow: View {
             case .text:
                 VStack(alignment: .leading, spacing: 6) {
                     Text(spec.title)
-                    TextField("(empty = clear)", text: textBinding)
+                    TextField("（留空表示清除）", text: textBinding)
                         .textFieldStyle(.roundedBorder)
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)

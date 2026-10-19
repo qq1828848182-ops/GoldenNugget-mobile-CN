@@ -73,7 +73,7 @@ struct PresetManagerView: View {
         }
         .alert("Load Preset", isPresented: isPresented($confirmLoad),
                presenting: confirmLoad) { info in
-            Button("Cancel", role: .cancel) { confirmLoad = nil }
+            Button("取消", role: .cancel) { confirmLoad = nil }
             Button("Load") {
                 performLoad(info)
                 confirmLoad = nil
@@ -82,7 +82,7 @@ struct PresetManagerView: View {
             Text(loadConfirmMessage(info))
         }
         .alert("Rollback Last Apply", isPresented: $confirmRollback) {
-            Button("Cancel", role: .cancel) {}
+            Button("取消", role: .cancel) {}
             Button("Roll back") { performRollback() }
         } message: {
             Text("Load the snapshot taken before the last successful apply? "
@@ -90,8 +90,8 @@ struct PresetManagerView: View {
         }
         .alert("Delete Preset", isPresented: isPresented($pendingDelete),
                presenting: pendingDelete) { info in
-            Button("Cancel", role: .cancel) { pendingDelete = nil }
-            Button("Delete", role: .destructive) {
+            Button("取消", role: .cancel) { pendingDelete = nil }
+            Button("删除", role: .destructive) {
                 performDelete(info)
                 pendingDelete = nil
             }
@@ -118,7 +118,7 @@ struct PresetManagerView: View {
             TextField("Preset name", text: $newName)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-            TextField("Description (optional)", text: $newDescription)
+            TextField("描述（可选）", text: $newDescription)
             Button {
                 saveCurrent()
             } label: {
@@ -158,7 +158,7 @@ struct PresetManagerView: View {
             Button {
                 showImporter = true
             } label: {
-                Label("Import Preset…", systemImage: "square.and.arrow.up.on.square")
+                Label("导入预设……", systemImage: "square.and.arrow.up.on.square")
             }
         }
     }
@@ -169,14 +169,14 @@ struct PresetManagerView: View {
                 .disabled(selected == nil)
             Button("Export") { export(include: nil) }
                 .disabled(selected == nil)
-            Button("Partial Export…") { requestPartialExport() }
+            Button("部分导出……") { requestPartialExport() }
                 .disabled(selected == nil)
             Button("Rollback Last Apply") { requestRollback() }
                 .disabled(!GoldenNuggetPresets.hasRollback)
             Button(role: .destructive) {
                 pendingDelete = selected
             } label: {
-                Text("Delete")
+                Text("删除")
             }
             .disabled(selected == nil)
         } footer: {
@@ -254,7 +254,7 @@ struct PresetManagerView: View {
         let stored = GoldenNuggetPresets.sanitize(name)
         do { try CommunityTemplateStore.shared.saveSelection(in: stored) }
         catch { setMessage(error.localizedDescription, .error); return }
-        setMessage("Preset \"\(stored)\" saved.", .success)
+        setMessage("预设「\(stored)」已保存。", .success)
         newName = ""
         newDescription = ""
         refresh()
@@ -273,9 +273,9 @@ struct PresetManagerView: View {
     /// (`preset_menu.py:123`).  The hidden-feature warning is not reproduced:
     /// this port has no per-feature safety rules engine to consult.
     private func loadConfirmMessage(_ info: GoldenNuggetPresets.PresetInfo) -> String {
-        var text = "Load preset \"\(info.name)\"?"
+        var text = "要加载预设「\(info.name)」吗？"
         if !info.description.isEmpty { text += "\n\nDescription: \(info.description)" }
-        text += "\nDevice: \(info.deviceModel) • iOS \(info.iosVersion)"
+        text += "\n设备：\(info.deviceModel) • iOS \(info.iosVersion)"
         text += "\n\nThis will replace your current configuration."
         if let warning = daemonCompatibilityWarning(info) {
             text += "\n\n⚠ \(warning)"
@@ -288,7 +288,7 @@ struct PresetManagerView: View {
         var mismatches: [String] = []
         if let saved = majorVersion(info.iosVersion),
            let current = majorVersion(identity.version), saved != current {
-            mismatches.append("iOS \(saved)x vs current iOS \(current)x")
+            mismatches.append("iOS \(saved)x 与当前 iOS \(current)x")
         }
         let savedType = deviceType(info.deviceModel)
         let currentType = deviceType(identity.productType)
@@ -307,7 +307,7 @@ struct PresetManagerView: View {
             setMessage("Failed to load the preset.", .error)
             return
         }
-        apply(preset, label: "Preset \"\(info.name)\" loaded.")
+        apply(preset, label: "预设「\(info.name)」已加载。")
     }
 
     /// `rollback_preset_flow` (`preset_menu.py:188`): the `__Rollback` snapshot
@@ -364,7 +364,7 @@ struct PresetManagerView: View {
             try PortablePreset.export(document, to: url)
             share = ShareItem(url: url)
         } catch {
-            setMessage("Failed to export preset: \(error.localizedDescription)", .error)
+            setMessage("导出预设失败：\(error.localizedDescription)", .error)
         }
     }
 
@@ -387,7 +387,7 @@ struct PresetManagerView: View {
             return
         }
         if selectedName == info.name { selectedName = nil }
-        setMessage("Preset \"\(info.name)\" deleted.", .success)
+        setMessage("预设「\(info.name)」已删除。", .success)
         refresh()
     }
 
@@ -400,9 +400,9 @@ struct PresetManagerView: View {
         if ok {
             refresh()
             selectedName = result
-            setMessage("Preset \"\(result)\" imported successfully.", .success)
+            setMessage("预设「\(result)」导入成功。", .success)
         } else {
-            setMessage("Failed to import preset: \(result)", .error)
+            setMessage("导入预设失败：\(result)", .error)
         }
     }
 
@@ -518,14 +518,14 @@ private struct PartialExportSheet: View {
                         .buttonStyle(.plain)
                     }
                 } header: {
-                    Text("Tweaks to include (\(chosen.count)/\(target.ids.count))")
+                    Text("要包含的调整项（\(chosen.count)/\(target.ids.count)）")
                 }
             }
             .navigationTitle("Partial Export")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { onCancel() }
+                    Button("取消") { onCancel() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Export") { onExport(chosen) }

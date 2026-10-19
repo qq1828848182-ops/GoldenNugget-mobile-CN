@@ -49,13 +49,13 @@ struct GoldenNuggetPreset {
 
         /// One line for the log, in the reference's own vocabulary.
         var summary: String {
-            var parts = ["preset v\(version.map(String.init) ?? "?")"]
+            var parts = ["预设 v\(version.map(String.init) ?? "?")"]
             if !description.isEmpty { parts.append("\"\(description)\"") }
             if !iosVersion.isEmpty && iosVersion != "Unknown" { parts.append("iOS \(iosVersion)") }
             if !deviceModel.isEmpty && deviceModel != "Unknown" { parts.append(deviceModel) }
             if exported { parts.append("exported") }
-            if partial { parts.append("partial (\(included.count) tweaks)") }
-            if !tags.isEmpty { parts.append("tags: \(tags.joined(separator: ","))") }
+            if partial { parts.append("部分（\(included.count) 个调整项）") }
+            if !tags.isEmpty { parts.append("标签：\(tags.joined(separator: ","))") }
             return parts.joined(separator: ", ")
         }
     }
@@ -72,23 +72,23 @@ struct GoldenNuggetPreset {
         do {
             root = try JSONSerialization.jsonObject(with: data, options: [])
         } catch {
-            throw GoldenNuggetError("autosave.json: not valid JSON (\(error.localizedDescription))")
+            throw GoldenNuggetError("autosave.json：不是有效的 JSON（\(error.localizedDescription)）")
         }
         guard let object = root as? [String: Any] else {
-            throw GoldenNuggetError("autosave.json: top level is not a JSON object")
+            throw GoldenNuggetError("autosave.json：顶层不是 JSON 对象")
         }
-        guard object["tweaks"] != nil || object["metadata"] != nil else {
-            throw GoldenNuggetError("autosave.json: no \"tweaks\" or \"metadata\" — not a GoldenNugget preset")
+        guard object["tweaks"] != nil || object["元数据"] != nil else {
+            throw GoldenNuggetError("autosave.json：没有 \"tweaks\" 或 \"metadata\" — 不是 GoldenNugget 预设")
         }
 
-        return GoldenNuggetPreset(metadata: parseMetadata(object["metadata"]),
+        return GoldenNuggetPreset(metadata: parseMetadata(object["元数据"]),
                                   entries: parseEntries(object["tweaks"]))
     }
 
     private static func parseMetadata(_ raw: Any?) -> Metadata {
         let dict = raw as? [String: Any] ?? [:]
         return Metadata(version: (dict["version"] as? NSNumber)?.intValue,
-                        description: dict["description"] as? String ?? "",
+                        description: dict["描述"] as? String ?? "",
                         deviceModel: dict["device_model"] as? String ?? "",
                         iosVersion: dict["ios_version"] as? String ?? "",
                         exported: boolValue(dict["exported"]) ?? false,
@@ -154,23 +154,23 @@ struct TweakImportReport {
     /// The block written into the run log.
     var logLines: [String] {
         var out: [String] = []
-        out.append("autosave.json import: \(metadataLine)")
-        out.append("  applied \(applied.count) tweak(s): \(applied.isEmpty ? "(none)" : applied.joined(separator: ", "))")
+        out.append("autosave.json 导入：\(metadataLine)")
+        out.append("  已应用 \(applied.count) 个调整项：\(applied.isEmpty ? "(none)" : applied.joined(separator: ", "))")
         let unsupported = skippedUnported.map { "\($0.id) — \($0.reason)" }
         if !unsupported.isEmpty {
-            out.append("  not part of this port (\(unsupported.count)): \(unsupported.joined(separator: "; "))")
+            out.append("  不属于本次移植范围（\(unsupported.count)）：\(unsupported.joined(separator: "; "))")
         }
         if !skippedIncompatible.isEmpty {
-            out.append("  switched off — not compatible with this device/OS: "
+            out.append("  已关闭 — 与此设备/系统不兼容："
                 + skippedIncompatible.joined(separator: ", "))
         }
         if !skippedUnknown.isEmpty {
-            out.append("  unknown tweak ids (ignored, like the reference): "
+            out.append("  未知调整项 ID（与参考实现一致，已忽略）："
                 + skippedUnknown.joined(separator: ", "))
         }
         for item in ignoredPayload {
-            out.append("  note: \(item.id) carries \(item.keys.joined(separator: ", ")) — "
-                + "not representable here, ignored")
+            out.append("  注意：\(item.id) 携带 \(item.keys.joined(separator: ", ")) — 此处无法表示，已忽略"
+                + "")
         }
         return out
     }
@@ -204,14 +204,14 @@ enum GoldenNuggetPresetImport {
     /// a name to a template.  Saying "needs the template asset store" would read
     /// as "not implemented", which is the one thing this map must not do.
     static let unported: [String: String] = [
-        "PosterBoard": "wallpapers — the reference excludes them from presets; "
-            + "use the PosterBoard page instead",
-        "Templates": "templates — a .batter file is chosen on the Templates page, "
-            + "not carried by a preset (the reference's own `templates` entry is a "
-            + "list of asset names this port has no store for)",
-        "StatusBar": "Status Bar — needs the StatusBarOverrideData struct over CFFI",
-        "IconThemes": "Icon Themes — needs the icon asset store",
-        "ClearScreenTimeAgentPlist": "daemons page — a NullifyFileTweak writing a 0-byte plist",
+        "PosterBoard": "壁纸 — 参考实现将其排除在预设之外；请改用 PosterBoard 页面"
+            + "",
+        "Templates": "templates — .batter 文件需在「模板」页面选择，预设不能携带（参考实现中的 `templates` 条目是一组资源名称，本移植版没有对应的存储）"
+            + ""
+            + "",
+        "StatusBar": "状态栏 — 需要通过 CFFI 传递 StatusBarOverrideData 结构体",
+        "IconThemes": "图标主题 — 需要图标资源库",
+        "ClearScreenTimeAgentPlist": "守护进程页面 — 一个写入 0 字节 plist 的 NullifyFileTweak",
     ]
 
     /// Desktop presets carry daemons as one entry: `Daemons` with a `value` dict
@@ -258,7 +258,7 @@ enum GoldenNuggetPresetImport {
         for entry in preset.entries {
             // Daemons is not a registry spec: it is one upstream entry covering
             // every label, and the port carries a spec per group.
-            if entry.id == "Daemons" {
+            if entry.id == "守护进程" {
                 applyDaemons(entry, to: &selection)
                 report.applied.append(entry.id)
                 continue

@@ -82,11 +82,11 @@ struct TemplatesView: View {
 
     private var introSection: some View {
         Section {
-            NativeNote("A `.batter` file is a ZIP holding a `config.json`: it names the domain "
-                + "to restore into and lists what you may change — an image to swap in, a colour, "
-                + "a number, which of three variants to install. Import one, fill in its options "
-                + "here, then press Apply on the home page. Nothing is written to the device until "
-                + "then.")
+            NativeNote("`.batter` 文件是一个 ZIP，内含一个 `config.json`：它指明要恢复到的域，并列出你可以修改的内容 —— 可替换的图片、颜色、数字，以及三种变体中要安装哪一种。"
+                + "导入一个、在此填好选项，然后在主页按下「应用」。"
+                + "在此之前不会向设备写入任何内容。"
+                + ""
+                + "")
         }
     }
 
@@ -106,8 +106,8 @@ struct TemplatesView: View {
                 } label: {
                     Label("Remove all templates", systemImage: "trash")
                 }
-                NativeNote("Each template is copied into this app, so removing one here removes "
-                    + "the copy — the file you imported is untouched.")
+                NativeNote("每个模板都会被复制进本应用，因此在这里移除只会删掉副本 —— 你导入的原始文件不受影响。"
+                    + "")
             }
         }
     }
@@ -144,10 +144,10 @@ struct TemplatesView: View {
             }
 
             if template.requiresSparserestore {
-                NativeSafetyNote("This template cannot be delivered by this app: it asks for "
-                    + "sparserestore, which this app does not implement. Importing it is "
-                    + "harmless — it is simply left out of the apply, and the run log says so "
-                    + "rather than reporting success.")
+                NativeSafetyNote("本应用无法交付该模板：它需要 sparserestore，而本应用未实现该功能。"
+                    + "导入它并无害处 —— 它只会被排除在应用之外，运行日志会如实说明，而不是报告成功。"
+                    + ""
+                    + "")
             }
 
             // The preview images the config names.  Horizontal or stacked, per
@@ -256,10 +256,10 @@ struct TemplatesView: View {
                     NativeNote("This one is required: the template cannot be applied until a file "
                         + "is chosen.")
                 }
-                NativeNote("Allowed: \(value.allowedFiles). Applies the same file to every path the "
-                    + "template lists.")
-                NativeNote("The chosen file is not kept between launches — re-pick it after "
-                    + "reopening the app. Everything else you set here is.")
+                NativeNote("允许：\(value.allowedFiles)。"
+                    + "将同一个文件应用到模板列出的每个路径。")
+                NativeNote("所选文件不会在两次启动之间保留 —— 重新打开应用后需要再次选择。"
+                    + "你在此设置的其他内容都会保留。")
 
             case let value as RemoveOption:
                 optionControl(title: value.label) {
@@ -275,8 +275,8 @@ struct TemplatesView: View {
                 }
                 NativeNote(value.identifier == nil
                     ? "Deletes: \(value.files.joined(separator: ", "))."
-                    : "Removes the element \"\(value.identifier)\""
-                        + (value.useCAID ? " (by its CoreAnimation id)" : "")
+                    : "移除元素「\(value.identifier)」"
+                        + (value.useCAID ? "（按其 CoreAnimation id）" : "")
                         + " from: \(value.files.joined(separator: ", ")).")
                 if value.inverted {
                     NativeNote("Inverted: the targets are deleted while this is **off**.")
@@ -423,14 +423,14 @@ struct TemplatesView: View {
     }
 
     private func setNote(_ value: SetOption) -> String {
-        var parts = ["Sets \(value.key) on element \"\(value.identifier)\""
-            + (value.useCAID ? " (by its CoreAnimation id)" : "") + "."]
-        parts.append("Applies to: \(value.files.joined(separator: ", ")).")
+        var parts = ["在元素「\(value.identifier)」上设置 \(value.key)"
+            + (value.useCAID ? "（按其 CoreAnimation id）" : "") + "."]
+        parts.append("应用于：\(value.files.joined(separator: ", "))。")
         if value.valueType == "float" {
             parts.append("Declared as a float, so the slider works in thousandths.")
         }
         if let valueTag = value.valueTag {
-            parts.append("Keeps the \(valueTag)(…) wrapper it shipped with.")
+            parts.append("保留其自带的 \(valueTag)(…) 包装。")
         }
         if let min = value.minValue, let max = value.maxValue, !min.isEmpty, !max.isEmpty {
             parts.append("Range \(min[0].description)–\(max[0].description).")
@@ -449,7 +449,7 @@ struct TemplatesView: View {
             ? "Every choice you do not pick is deleted before the files are delivered."
             : "The choices you do not pick are deleted before the files are delivered."]
         if value.renames {
-            parts.append("The chosen files are renamed to: \(value.names.joined(separator: ", ")).")
+            parts.append("所选文件会被重命名为：\(value.names.joined(separator: ", "))。")
         }
         return parts.joined(separator: " ")
     }
@@ -511,11 +511,11 @@ struct TemplatesView: View {
             selection.loadFromDisk(deviceVersion: identity.version)
             status = "Imported \(template.title)."
             statusTone = .secondary
-            RunLog.shared.append("Templates: imported \(url.lastPathComponent) as "
-                + "\"\(template.title)\" (\(template.domain), \(template.options.count) option(s)).")
+            RunLog.shared.append("模板：已将 \(url.lastPathComponent) 导入为「\(template.title)」（\(template.domain)，\(template.options.count) 个选项）。"
+                + "")
         } catch {
             pickError = error.localizedDescription
-            RunLog.shared.append("Templates: import failed — \(error.localizedDescription)")
+            RunLog.shared.append("模板：导入失败 —— \(error.localizedDescription)")
         }
     }
 

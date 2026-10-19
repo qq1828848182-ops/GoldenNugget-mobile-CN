@@ -85,7 +85,7 @@ extension TweakRowProfile {
         rootOwner: 501, rootGroup: 501, rootProtectionClass: PROTECTION_CLASS_DIR,
         carriesDigest: false,
         verified: true,
-        note: "AppDomain-* rows, as delivered by BackupInjector.inject")
+        note: "AppDomain-* 记录，由 BackupInjector.inject 提供")
 
     /// `SysSharedContainerDomain-*`: the class `BackupInjector.injectSystemPlist`
     /// already delivers (the Lock Screen footnote), with production evidence.
@@ -96,7 +96,7 @@ extension TweakRowProfile {
         rootOwner: 0, rootGroup: 0, rootProtectionClass: PROTECTION_CLASS_DIR,
         carriesDigest: false,
         verified: true,
-        note: "SysSharedContainerDomain rows, as delivered by BackupInjector.injectSystemPlist")
+        note: "SysSharedContainerDomain 记录，由 BackupInjector.injectSystemPlist 提供")
 
     /// Measured: `mobile/com.apple.springboard.plist`, `mobile/.GlobalPreferences.plist`
     /// and `mobile/com.apple.sharingd.plist` are all mode 0o100755, `501/501`,
@@ -109,7 +109,7 @@ extension TweakRowProfile {
         rootOwner: 0, rootGroup: 0, rootProtectionClass: PROTECTION_CLASS_SYSTEM_FILE,
         carriesDigest: true,
         verified: false,
-        note: "ManagedPreferencesDomain rows")
+        note: "ManagedPreferencesDomain 记录")
 
     /// Measured: `Library/Preferences/.GlobalPreferences.plist` is mode
     /// 0o100600 `501/501` class 4 (EA `com.apple.cfprefsd`) and
@@ -125,7 +125,7 @@ extension TweakRowProfile {
         rootOwner: 501, rootGroup: 501, rootProtectionClass: PROTECTION_CLASS_DIR,
         carriesDigest: true,
         verified: false,
-        note: "HomeDomain rows")
+        note: "HomeDomain 记录")
 
     /// Measured: `SystemConfiguration/*.plist` are mode 0o100644, `0/0`,
     /// class 4, with **no** extended attribute; dir rows and the root are
@@ -137,7 +137,7 @@ extension TweakRowProfile {
         rootOwner: 0, rootGroup: 0, rootProtectionClass: PROTECTION_CLASS_SYSTEM_FILE,
         carriesDigest: true,
         verified: false,
-        note: "SystemPreferencesDomain rows")
+        note: "SystemPreferencesDomain 记录")
 
     /// Measured: `com.apple.xpc.launchd/disabled.plist` is `0/0` class 4, EA
     /// `com.apple.BackupAgent2`; its dir rows are `0/0` class 4.
@@ -148,7 +148,7 @@ extension TweakRowProfile {
         rootOwner: 0, rootGroup: 0, rootProtectionClass: PROTECTION_CLASS_SYSTEM_FILE,
         carriesDigest: true,
         verified: false,
-        note: "DatabaseDomain rows")
+        note: "DatabaseDomain 记录")
 
     /// A domain this port has no measurement for.  Falls back to the most
     /// common shape the backup shows for a system-owned preference file, and is
@@ -164,7 +164,7 @@ extension TweakRowProfile {
         // backup shows stamps a digest (RootDomain 36/36).
         carriesDigest: true,
         verified: false,
-        note: "no measurement for this domain — using the common system-preference shape")
+        note: "此域没有测量数据 — 使用通用的系统偏好形态")
 }
 
 /// Writes compiled tweak payloads into a backup as restorable rows.
@@ -186,7 +186,7 @@ enum TweakInjector {
         let unverifiedDomains: [String]
 
         var summary: String {
-            "\(files) tweak file(s) in \(dirRows) directory row(s)"
+            "\(files) 个调整项文件，位于 \(dirRows) 条目录记录中"
         }
     }
 

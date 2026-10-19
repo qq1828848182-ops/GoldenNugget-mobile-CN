@@ -32,7 +32,7 @@ struct CommunityCatalogView: View {
             Section {
                 Toggle("Compatible with this iOS", isOn: $compatibleOnly)
                 Toggle("Favorites only", isOn: $favoritesOnly)
-                if loading { ProgressView("Loading catalog…") }
+                if loading { ProgressView("正在加载目录…") }
                 if !message.isEmpty { Text(message).font(.footnote).textSelection(.enabled) }
                 Link("Community repository and submissions", destination: CommunityCatalog.repositoryURL)
             }
@@ -49,7 +49,7 @@ struct CommunityCatalogView: View {
                 Button("Save shared preset") {
                     do {
                         let name = try CommunityCatalog.store(PresetShareCode.decode(code), name: codeName)
-                        message = "Saved \(name). Load it from Presets when ready."
+                        message = "已保存 \(name)。准备好后可从预设中加载。"
                         code = ""; epoch += 1
                     } catch { message = error.localizedDescription }
                 }.disabled(code.isEmpty)
@@ -192,7 +192,7 @@ struct CommunityCatalogView: View {
                 message = "Template installed. Review its switches before Apply."
             } else {
                 let name = try CommunityCatalog.installPreset(entry)
-                message = "Saved \(name). Load it from Presets when ready."
+                message = "已保存 \(name)。准备好后可从预设中加载。"
             }
             epoch += 1
         } catch { message = error.localizedDescription }
@@ -217,7 +217,7 @@ struct CommunityCatalogView: View {
         } else {
             let result = PortablePreset.importFile(url)
             guard result.0 else { throw CommunityError(result.1) }
-            message = "Preset \(result.1) imported."
+            message = "已导入预设 \(result.1)。"
         }
         epoch += 1
     }

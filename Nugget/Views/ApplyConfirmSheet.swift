@@ -76,7 +76,7 @@ struct ApplyConfirmSheet: View {
                 }
 
                 if !preview.rows.isEmpty {
-                    Section("Files") {
+                    Section("文件") {
                         ForEach(preview.rows) { row in
                             HStack {
                                 Text(row.label)
@@ -92,14 +92,14 @@ struct ApplyConfirmSheet: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Apply")
+            .navigationTitle("应用")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { onCancel() }
+                    Button("取消") { onCancel() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Apply") { onApply() }
+                    Button("应用") { onApply() }
                         .font(.headline)
                 }
             }
@@ -120,6 +120,6 @@ struct ApplyConfirmSheet: View {
         let charging = device.batteryState == .charging || device.batteryState == .full
         let percent = Int((level * 100).rounded())
         if charging || percent > 20 { return nil }
-        return "⚠ Low battery: \(percent)%. Connect the charger before restoring."
+        return "⚠ 电量低：\(percent)%。恢复前请连接充电器。"
     }
 }

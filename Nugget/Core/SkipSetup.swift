@@ -83,9 +83,9 @@ enum SkipSetup {
             "PostSetupProfileWasInstalled": true,
         ]
         var warnings: [String] = [
-            "skip setup: the file is built from these keys alone — upstream merges it with the "
-                + "device's existing CloudConfigurationDetails.plist (`build_cloud_config(existing:)`), "
-                + "which this port cannot read (no MobileConfigService).",
+            "skip setup：该文件仅由这些键构建 — 上游会把它与设备现有的 CloudConfigurationDetails.plist 合并（`build_cloud_config(existing:)`），而本移植版无法读取该文件（没有 MobileConfigService）。"
+                + ""
+                + "",
         ]
 
         if supervised {
@@ -94,17 +94,17 @@ enum SkipSetup {
             if name.isEmpty {
                 // Upstream drops the keybag fields in this case and warns nothing;
                 // it is a state it does not produce on purpose.
-                warnings.append("skip setup: supervised with no organization name — upstream strips "
-                    + "the keybag fields here, so no certificate is written either.")
+                warnings.append("skip setup：已监督但没有组织名称 — 上游在此处会移除 keybag 字段，因此也不会写入证书。"
+                    + "")
             } else {
                 config["OrganizationName"] = name
                 // `str(uuid4())` is lowercase, and the value round-trips into the
                 // device's own state, so the case is kept as upstream writes it.
                 config["OrganizationMagic"] = UUID().uuidString.lowercased()
                 config["IsMDMUnremovable"] = false
-                warnings.append("skip setup: SupervisorHostCertificates is NOT written — upstream "
-                    + "generates an x509 from a keybag (pymobiledevice3 create_keybag_file) and this "
-                    + "port has no generator, so the device gets a supervised flag with no certificate.")
+                warnings.append("skip setup：未写入 SupervisorHostCertificates — 上游会从 keybag 生成 x509 证书（pymobiledevice3 create_keybag_file），而本移植版没有生成器，因此设备只会得到一个监督标记，没有证书。"
+                    + ""
+                    + "")
             }
         }
         return (config, warnings)

@@ -64,7 +64,7 @@ struct StatusBarView: View {
             deliveryCard
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Status Bar")
+        .navigationTitle("状态栏")
         .navigationBarTitleDisplayMode(.inline)
         .task {
             // A page-level reload, like PosterBoard's: the selection is owned by
@@ -78,12 +78,12 @@ struct StatusBarView: View {
 
     private var enableSection: some View {
         Section {
-            toggleRow("Enable Status Bar Modifications", isOn: $selection.enabled) {
+            toggleRow("启用状态栏修改", isOn: $selection.enabled) {
                 edited()
             }
             NativeNote(mechanism == .archive
-                ? "This writes \(StatusBarMechanism.archive.restorePath) in \(StatusBarMechanism.archive.domain)."
-                : "This writes \(StatusBarMechanism.classic.restorePath) in \(StatusBarMechanism.classic.domain).")
+                ? "这会写入 \(StatusBarMechanism.archive.domain) 中的 \(StatusBarMechanism.archive.restorePath)。"
+                : "这会写入 \(StatusBarMechanism.classic.domain) 中的 \(StatusBarMechanism.classic.restorePath)。")
         }
     }
 
@@ -106,15 +106,15 @@ struct StatusBarView: View {
     /// row so the gating sits next to the control it gates instead of in a second
     /// list of names that could drift out of step with the rows.
     private var textSection: some View {
-        Section("Text") {
-            textFieldRow(.carrierName, "Carrier Name", survivesArchive: true)
-            textFieldRow(.serviceBadge, "Service Badge", survivesArchive: true)
-            textFieldRow(.secondaryCarrierName, "Secondary Carrier Name", survivesArchive: true)
-            textFieldRow(.secondaryServiceBadge, "Secondary Service Badge", survivesArchive: true)
-            textFieldRow(.timeText, "Time Text", survivesArchive: false)
-            textFieldRow(.dateText, "Date Text", survivesArchive: false)
-            textFieldRow(.breadcrumb, "Breadcrumb Text", survivesArchive: false)
-            textFieldRow(.batteryDetail, "Battery Detail Text", survivesArchive: false)
+        Section("文本") {
+            textFieldRow(.carrierName, "运营商名称", survivesArchive: true)
+            textFieldRow(.serviceBadge, "服务标识", survivesArchive: true)
+            textFieldRow(.secondaryCarrierName, "副卡运营商名称", survivesArchive: true)
+            textFieldRow(.secondaryServiceBadge, "副卡服务标识", survivesArchive: true)
+            textFieldRow(.timeText, "时间文字", survivesArchive: false)
+            textFieldRow(.dateText, "日期文字", survivesArchive: false)
+            textFieldRow(.breadcrumb, "面包屑文字", survivesArchive: false)
+            textFieldRow(.batteryDetail, "电池详情文字", survivesArchive: false)
         }
     }
 
@@ -122,14 +122,14 @@ struct StatusBarView: View {
 
     /// The numeric overrides, as steppers in the reference's own ranges.
     private var levelsSection: some View {
-        Section("Levels") {
-            levelRow(.signalBars, "Cellular Signal Bars", range: 0...5, survivesArchive: true)
-            levelRow(.secondarySignalBars, "Secondary Cellular Signal Bars",
+        Section("信号格") {
+            levelRow(.signalBars, "蜂窝信号格", range: 0...5, survivesArchive: true)
+            levelRow(.secondarySignalBars, "副卡蜂窝信号格",
                      range: 0...5, survivesArchive: true)
-            levelRow(.wifiBars, "Wi-Fi Signal Bars", range: 0...5, survivesArchive: false)
-            levelRow(.batteryCapacity, "Battery Icon Capacity",
+            levelRow(.wifiBars, "Wi-Fi 信号格", range: 0...5, survivesArchive: false)
+            levelRow(.batteryCapacity, "电池图标容量",
                      range: 0...100, survivesArchive: false)
-            levelRow(.dataNetworkType, "Data Network Type", range: 0...30, survivesArchive: false)
+            levelRow(.dataNetworkType, "数据网络类型", range: 0...30, survivesArchive: false)
             levelRow(.secondaryDataNetworkType, "Secondary Data Network Type",
                      range: 0...30, survivesArchive: false)
         }
@@ -144,10 +144,10 @@ struct StatusBarView: View {
     /// and collapsing them into one switch would have meant dropping a control
     /// the reference shows.  Neither survives the archive.
     private var rawSection: some View {
-        Section("Raw Signal Strength") {
-            toggleRow("Show Numeric Cellular Strength",
+        Section("原始信号强度") {
+            toggleRow("以数字显示蜂窝信号强度",
                       isOn: $selection.overrides.rawSignalShown) { edited() }
-            toggleRow("Show Numeric Wi-Fi Strength",
+            toggleRow("以数字显示 Wi-Fi 信号强度",
                       isOn: $selection.overrides.rawWifiSignalShown) { edited() }
         }
     }
@@ -164,7 +164,7 @@ struct StatusBarView: View {
     /// visibility: `set_item_override(item, True)` and "no override" are
     /// different on the device, and the reference only ever offers the second.
     private var itemsSection: some View {
-        Section("Items") {
+        Section("项目") {
             ForEach(Self.itemRows, id: \.0) { item, title in
                 // `itemHidden` already saves, so this row passes no `onChange`:
                 // two saves per flip would write the same bytes twice and make
@@ -182,20 +182,20 @@ struct StatusBarView: View {
     /// without it). Offering them would be offering 32 switches that can only
     /// ever write a value nothing reads.
     private static let itemRows: [(StatusBarItem, String)] = [
-        (.quietMode, "Disable Focus Mode icon"),
-        (.airplaneMode, "Disable Airplane Mode icon"),
-        (.cellularService, "Disable Cellular Service icon"),
-        (.cellularDataNetwork, "Disable Wi-Fi icon"),
-        (.mainBattery, "Disable Battery icon"),
-        (.bluetooth, "Disable Bluetooth icon"),
-        (.alarm, "Disable Alarm icon"),
-        (.location, "Disable Location icon"),
-        (.rotationLock, "Disable Rotation Lock icon"),
-        (.airPlay, "Disable AirPlay icon"),
-        (.carPlay, "Disable CarPlay icon"),
-        (.vpn, "Disable VPN icon"),
-        (.voiceControl, "Disable Voice Control icon"),
-        (.liquidDetection, "Disable Liquid Detection Warning icon")
+        (.quietMode, "禁用专注模式图标"),
+        (.airplaneMode, "禁用飞行模式图标"),
+        (.cellularService, "禁用蜂窝服务图标"),
+        (.cellularDataNetwork, "禁用 Wi-Fi 图标"),
+        (.mainBattery, "禁用电池图标"),
+        (.bluetooth, "禁用蓝牙图标"),
+        (.alarm, "禁用闹钟图标"),
+        (.location, "禁用定位图标"),
+        (.rotationLock, "禁用旋转锁定图标"),
+        (.airPlay, "禁用 AirPlay 图标"),
+        (.carPlay, "禁用 CarPlay 图标"),
+        (.vpn, "禁用 VPN 图标"),
+        (.voiceControl, "禁用语音控制图标"),
+        (.liquidDetection, "禁用进液警告图标")
     ]
 
     private func isItemHidden(_ item: StatusBarItem) -> Bool {
@@ -217,10 +217,10 @@ struct StatusBarView: View {
     // MARK: - Extras
 
     private var extrasSection: some View {
-        Section("Extras") {
-            toggleRow("Silly Mode (every item on)", isOn: $selection.sillyMode) { edited() }
-            NativeNote("Silly Mode forces every status-bar item on, over anything set "
-                + "above it. Turning it off restores exactly what you had.")
+        Section("附加项") {
+            toggleRow("趣味模式（开启全部项目）", isOn: $selection.sillyMode) { edited() }
+            NativeNote("趣味模式会强制开启所有状态栏项目，覆盖上面设置的一切。"
+                + "关闭它会完全恢复你原来的设置。")
         }
     }
 
@@ -236,13 +236,13 @@ struct StatusBarView: View {
     /// whether that clears or does nothing is the case worth a line of text.
     private var deliveryCard: some View {
         Section {
-            Text(selection.enabled ? "Ready to apply" : "Not applying")
+            Text(selection.enabled ? "可应用" : "未应用")
                 .font(.headline)
             NativeNote(selection.enabled
-                ? "\(selection.overrides.activeCount) override(s) → "
-                    + "\(mechanism == .archive ? "the iOS 27 archive" : "the classic struct"), "
-                    + "written on the next Apply."
-                : "Nothing is written on Apply until this is on.")
+                ? "\(selection.overrides.activeCount) 个覆盖 → \(mechanism == .archive ? "the iOS 27 archive" : "the classic struct")，将在下次应用时写入。"
+                    + ""
+                    + ""
+                : "未开启此项之前，应用时不会写入任何内容。")
         }
     }
 
@@ -275,7 +275,7 @@ struct StatusBarView: View {
         } else {
             VStack(alignment: .leading, spacing: 6) {
                 toggleRow(title, isOn: overrideSwitch(for: key)) { edited() }
-                TextField("(empty = clear)", text: textBinding(for: key))
+                TextField("（留空表示清除）", text: textBinding(for: key))
                     .textFieldStyle(.roundedBorder)
                     .disabled(!field.set)
             }
@@ -304,7 +304,7 @@ struct StatusBarView: View {
                     HStack {
                         Text(title)
                         Spacer()
-                        Text(field.set ? "\(field.value)" : "Default")
+                        Text(field.set ? "\(field.value)" : "默认")
                             .foregroundStyle(.secondary)
                     }
                 }

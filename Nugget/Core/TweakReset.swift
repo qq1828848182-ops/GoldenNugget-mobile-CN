@@ -28,10 +28,10 @@ enum ResetPage: String, CaseIterable, Identifiable, Sendable {
     /// is the string the reference's checkbox carries.
     var title: String {
         switch self {
-        case .statusBar: return "Status Bar"
+        case .statusBar: return "状态栏"
         case .springboard: return "Springboard"
-        case .internalOptions: return "Internal"
-        case .daemons: return "Daemons"
+        case .internalOptions: return "内部选项"
+        case .daemons: return "守护进程"
         }
     }
 
@@ -120,15 +120,15 @@ enum TweakReset {
     /// the log must not describe that as "not nulled".
     enum Kind: String, Sendable {
         /// 0 bytes, the iOS 26 null.
-        case zeroBytes = "0 bytes"
+        case zeroBytes = "0 字节"
         /// `plistlib.dumps({})`, the iOS 27 null.
-        case emptyPlist = "empty plist"
+        case emptyPlist = "空 plist"
         /// The stock six-key `disabled.plist`.
-        case stockDaemons = "stock daemons"
+        case stockDaemons = "原生守护进程"
         /// The zeroed classic status-bar struct (iOS 26).
-        case statusBarClassic = "fresh status bar struct"
+        case statusBarClassic = "全新状态栏结构"
         /// The archive that decodes as "no overrides" (iOS 27+).
-        case statusBarArchive = "reset status bar archive"
+        case statusBarArchive = "重置状态栏归档"
     }
 
     /// One file the reset will write.
@@ -209,7 +209,7 @@ enum TweakReset {
         func addNulled(_ location: TweakFileLocation) {
             guard let dest = TweakDomainMap.split(path: location.rawValue) else {
                 skipped.append((location.rawValue,
-                                "no backup-domain prefix matches this location"))
+                                "没有任何备份域前缀与此位置匹配"))
                 return
             }
             append(path: location.rawValue, contents: nullContents, kind: nullKind,
@@ -222,7 +222,7 @@ enum TweakReset {
         func addStatusBar() {
             let mechanism: StatusBarMechanism = ios27 ? .archive : .classic
             guard let built = try? mechanism.payload(for: StatusBarOverrides()) else {
-                skipped.append((mechanism.restorePath, "could not build the reset status bar payload"))
+                skipped.append((mechanism.restorePath, "无法构建重置用的状态栏载荷"))
                 return
             }
             append(path: mechanism.restorePath, contents: built.data,
@@ -239,7 +239,7 @@ enum TweakReset {
                 let location = TweakFileLocation.disabledDaemons
                 guard let dest = TweakDomainMap.split(path: location.rawValue) else {
                     skipped.append((location.rawValue,
-                                    "no backup-domain prefix matches this location"))
+                                    "没有任何备份域前缀与此位置匹配"))
                     continue
                 }
                 append(path: location.rawValue,

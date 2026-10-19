@@ -1,0 +1,107 @@
+name: Build IPA (Xcode 26.3)
+
+# Builds the Chinese localization with Xcode 26.3 specifically.
+#
+# Why a separate workflow instead of editing `build.yml`: upstream owns that
+# file, it runs on `macos-latest` (which currently resolves to Xcode 26.6), and
+# keeping our pin in its own file means an upstream edit to `build.yml` can
+# never silently drop or change the version we build against.  It also leaves
+# `build.yml` intact for anyone who wants the tracking-latest build.
+#
+# `macos-26-arm64` is the image that carries the whole 26.x line side by side in
+# /Applications; `Xcode_26.3.app` is the one this workflow selects.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Nugget/**"
+      - "layout/**"
+      - "scripts/**"
+      - "project.yml"
+      - "Package.swift"
+      - "xtool.yml"
+      - ".github/workflows/build-xcode26.3.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build unsigned IPA (Xcode 26.3)
+    runs-on: macos-26-arm64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Select Xcode 26.3
+        # The runner ships many Xcode versions; the default is whatever the
+        # image points at.  Selecting by explicit path -- and exporting
+        # DEVELOPER_DIR -- makes the version a property of this file rather than
+        # of the image, so a runner image bump cannot change what we compile with.
+        run: |
+          set -euo pipefail
+          TARGET="/Applications/Xcode_26.3.app"
+          if [ ! -d "$TARGET" ]; then
+            echo "error: $TARGET is not installed on this runner" >&2
+            echo "available:" >&2
+            ls -d /Applications/Xcode*.app >&2 || true
+            exit 1
+          fi
+          sudo xcode-select -s "$TARGET"
+          echo "DEVELOPER_DIR=$TARGET" >> "$GITHUB_ENV"
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+
+      - name: Check toolchain
+        run: bash scripts/check-xcode-toolchain.sh
+
+      - name: Install XcodeGen
+        # Pinned the same way upstream pins it: the version project.yml is
+        # written against, unpacked with its SettingPresets directory intact.
+        env:
+          XCODEGEN_VERSION: 2.46.0
+        run: |
+          set -euo pipefail
+          DEST="$RUNNER_TEMP/xcodegen"
+          rm -rf "$DEST"
+          mkdir -p "$DEST"
+          curl -fsSL -o "$RUNNER_TEMP/xcodegen.zip" \
+            "https://github.com/yonaskolb/XcodeGen/releases/download/$XCODEGEN_VERSION/xcodegen.zip"
+          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$DEST"
+          echo "$DEST/xcodegen/bin" >> "$GITHUB_PATH"
+
+      - name: Generate the Xcode project
+        # GoldenNuggetMobile.xcodeproj is generated from project.yml and is
+        # gitignored (upstream made it a build product), so it has to exist
+        # before xcodebuild runs.
+        run: |
+          xcodegen --version
+          xcodegen generate
+
+      - name: Build IPA
+        run: ./scripts/build-ipa.sh Release
+
+      - name: Record the toolchain used
+        # Written next to the artifact so the IPA can be traced back to an exact
+        # Xcode build, not just "26.3".
+        run: |
+          {
+            echo "Xcode: $(xcodebuild -version | head -1)"
+            echo "Build: $(xcodebuild -version | tail -1)"
+            echo "SDK:   $(xcrun --sdk iphoneos --show-sdk-version)"
+            echo "Swift: $(swift --version 2>&1 | head -1)"
+            echo "Commit: $GITHUB_SHA"
+          } > build/toolchain.txt
+          cat build/toolchain.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: GoldenNuggetMobile-CN-xcode26.3
+          path: |
+            build/GoldenNuggetMobile.ipa
+            build/toolchain.txt
+          if-no-files-found: error

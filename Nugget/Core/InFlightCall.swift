@@ -73,7 +73,7 @@ final class InFlightCall: @unchecked Sendable {
     var abandonedDescription: String {
         lock.lock()
         defer { lock.unlock() }
-        return abandonedLabel ?? "the device operation"
+        return abandonedLabel ?? "设备操作"
     }
 
 }

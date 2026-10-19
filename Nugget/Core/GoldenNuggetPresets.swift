@@ -75,7 +75,7 @@ enum GoldenNuggetPresets {
         guard let data = try? Data(contentsOf: fileURL(for: name)),
               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
         else { return nil }
-        return root["metadata"] as? [String: Any]
+        return root["元数据"] as? [String: Any]
     }
 
     /// `list_presets_with_metadata` (`preset_manager.py:111`): the folder's
@@ -98,7 +98,7 @@ enum GoldenNuggetPresets {
         list().compactMap { name in
             guard let meta = metadata(for: name) else { return nil }
             return PresetInfo(name: name,
-                              description: meta["description"] as? String ?? "",
+                              description: meta["描述"] as? String ?? "",
                               deviceModel: meta["device_model"] as? String ?? "Unknown",
                               iosVersion: meta["ios_version"] as? String ?? "Unknown",
                               createdAt: (meta["created_at"] as? NSNumber)?.intValue ?? 0,
@@ -208,12 +208,12 @@ enum GoldenNuggetPresets {
                 daemonValues[key] = value.plistObject
             }
         }
-        tweaks["Daemons"] = ["type": "AdvancedPlistTweak", "enabled": daemonsEnabled, "value": daemonValues]
+        tweaks["守护进程"] = ["type": "AdvancedPlistTweak", "enabled": daemonsEnabled, "value": daemonValues]
 
         let now = Int(Date().timeIntervalSince1970)
         let metadata: [String: Any] = [
             "version": GoldenNuggetAutosave.presetVersion,
-            "description": description,
+            "描述": description,
             "device_model": deviceModel.isEmpty ? "Unknown" : deviceModel,
             "ios_version": iosVersion.isEmpty ? "Unknown" : iosVersion,
             "created_at": createdAt ?? now,
@@ -221,7 +221,7 @@ enum GoldenNuggetPresets {
             "tags": tags,
         ]
         // `data["metadata"] = meta` in the reference, so metadata comes second.
-        return ["tweaks": tweaks, "metadata": metadata]
+        return ["tweaks": tweaks, "元数据": metadata]
     }
 
     // MARK: - Export / Import
@@ -241,10 +241,10 @@ enum GoldenNuggetPresets {
         if let include, !include.isEmpty {
             let tweaks = root["tweaks"] as? [String: Any] ?? [:]
             root["tweaks"] = tweaks.filter { include.contains($0.key) }
-            var meta = root["metadata"] as? [String: Any] ?? [:]
+            var meta = root["元数据"] as? [String: Any] ?? [:]
             meta["partial"] = true
             meta["included"] = include.sorted()
-            root["metadata"] = meta
+            root["元数据"] = meta
         }
         return try? JSONSerialization.data(withJSONObject: root,
                                            options: [.prettyPrinted, .sortedKeys])
@@ -272,7 +272,7 @@ enum GoldenNuggetPresets {
 
         var base = newName
         if base == nil || base?.isEmpty == true {
-            let description = (root["metadata"] as? [String: Any])?["description"] as? String ?? ""
+            let description = (root["元数据"] as? [String: Any])?["描述"] as? String ?? ""
             base = description.isEmpty ? url.deletingPathExtension().lastPathComponent : description
         }
         let baseName = sanitize(base ?? "")
@@ -288,11 +288,11 @@ enum GoldenNuggetPresets {
 
         let now = Int(Date().timeIntervalSince1970)
         var incoming = root
-        var meta = incoming["metadata"] as? [String: Any] ?? [:]
+        var meta = incoming["元数据"] as? [String: Any] ?? [:]
         meta["imported_at"] = now
         meta["updated_at"] = now
         if meta["created_at"] == nil { meta["created_at"] = now }
-        incoming["metadata"] = meta
+        incoming["元数据"] = meta
 
         do {
             try FileManager.default.createDirectory(at: presetsDirectory,
@@ -316,14 +316,14 @@ enum GoldenNuggetPresets {
         else { return false }
         // `data.get("metadata", {})`, but a present non-dict is a failure.
         let meta: [String: Any]
-        if let present = data["metadata"] {
+        if let present = data["元数据"] {
             guard let dict = present as? [String: Any] else { return false }
             meta = dict
         } else {
             meta = [:]
         }
 
-        for key in ["description", "device_model", "ios_version"] {
+        for key in ["描述", "device_model", "ios_version"] {
             if let value = meta[key], !(value is String) { return false }
         }
         if let tags = meta["tags"] {
@@ -337,7 +337,7 @@ enum GoldenNuggetPresets {
             guard let entry = rawEntry as? [String: Any] else { return false }
             if let enabled = entry["enabled"], !(enabled is Bool) { return false }
             // Daemons / whole-dict writers carry their keys in `value`.
-            if (name == "Daemons" || entry["type"] as? String == "AdvancedPlistTweak"),
+            if (name == "守护进程" || entry["type"] as? String == "AdvancedPlistTweak"),
                let value = entry["value"], !(value is [String: Any]) { return false }
             if let templates = entry["templates"] {
                 guard let list = templates as? [Any], list.allSatisfy({ $0 is String }) else { return false }
@@ -367,7 +367,7 @@ enum GoldenNuggetPresets {
     static func presetHasDaemonChanges(_ root: [String: Any]?) -> Bool {
         guard let root, let tweaks = root["tweaks"] as? [String: Any] else { return false }
         for (name, rawEntry) in tweaks {
-            guard name == "Daemons" || name.hasPrefix("Daemon.") else { continue }
+            guard name == "守护进程" || name.hasPrefix("Daemon.") else { continue }
             guard let entry = rawEntry as? [String: Any] else { return false }
             if (entry["enabled"] as? Bool) == true { return true }
             if let values = entry["value"] as? [String: Any],

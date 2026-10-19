@@ -236,7 +236,7 @@ func buildDataprotectionExtendedAttributes(
 func mbFileBlobKeys(_ data: Data) -> String {
     guard let obj = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil),
           let dict = obj as? [String: Any] else {
-        return "<not a plist>"
+        return "<不是 plist>"
     }
     guard let objects = dict["$objects"] as? [Any] else {
         return dict.keys.sorted().joined(separator: ",")
@@ -307,13 +307,13 @@ func mbFileBlobInode(_ data: Data) -> Int? {
 /// `Digest` are legitimately references — they are real objects; a *scalar*
 /// field appearing in this list is the bug.
 func mbFileBlobShape(_ data: Data) -> String {
-    guard let entry = mbFileBlobObject(data) else { return "<no object dict>" }
+    guard let entry = mbFileBlobObject(data) else { return "<无对象字典>" }
     var references: [String] = []
     for key in entry.keys.sorted() where !key.hasPrefix("$") {
         if entry[key] is NSNumber { continue }
         references.append(key)
     }
     let mode = (entry["Mode"] as? NSNumber)?.intValue
-    return "mode=\(mode.map(String.init) ?? "UNREADABLE") "
-        + "reference-valued keys=[\(references.joined(separator: ","))]"
+    return "mode=\(mode.map(String.init) ?? "UNREADABLE") 引用值键=[\(references.joined(separator: ","))]"
+        + ""
 }

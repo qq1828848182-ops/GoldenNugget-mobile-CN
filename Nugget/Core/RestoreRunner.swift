@@ -18,7 +18,7 @@ enum RestoreRunner {
     @discardableResult
     static func run(backupRoot: URL, sourceIdentifier: String) async throws -> Int32 {
         let minimuxer = Minimuxer.shared()
-        AppLog.write("Restoring backup at \(backupRoot.path) (source \(sourceIdentifier)) via mobilebackup2…")
+        AppLog.write("正在通过 mobilebackup2 恢复位于 \(backupRoot.path) 的备份（来源 \(sourceIdentifier)）…")
 
         let beat = Heartbeat()
         let stage = StageTimer("restore")
@@ -62,7 +62,7 @@ enum RestoreRunner {
                 onProgress: { overall in
                     let pct = overall < 0 ? 0 : min(overall, 100)
                     if let step = progress.step(pct) {
-                        AppLog.write("restore progress: \(step)%")
+                        AppLog.write("恢复进度：\(step)%")
                     }
                 },
                 // Without this the host-side half of the exchange is invisible:
@@ -79,8 +79,8 @@ enum RestoreRunner {
         // the last 5 % STEP crossed, so "≥55%" was the most precise thing the
         // operator ever saw about a run that had in fact finished.
         let reached = progress.lastPercent
-        AppLog.write("restore verified: the device reported "
-            + (reached < 0 ? "completion (it sent no percentage)" : "\(Int(reached))%"))
+        AppLog.write("恢复已验证：设备报告"
+            + (reached < 0 ? "完成（它未发送百分比）" : "\(Int(reached))%"))
         return 0
     }
 }

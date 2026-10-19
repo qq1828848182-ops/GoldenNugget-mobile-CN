@@ -70,7 +70,7 @@ struct SettingsView: View {
             historySection
             developmentSection
         }
-        .navigationTitle("Settings")
+        .navigationTitle("设置")
         // Compact widths only -- on a tablet the split view draws its own sidebar
         // toggle, and a second button beside it is the duplicate-controls mess.
         .goldenSidebarButton()
@@ -91,7 +91,7 @@ struct SettingsView: View {
     // MARK: - About
 
     private var aboutSection: some View {
-        Section("About") {
+        Section("关于") {
             VStack(spacing: 12) {
                 NativeLogo(size: 88)
                 Text("GoldenNugget")
@@ -106,16 +106,16 @@ struct SettingsView: View {
 
             // A credit, not a setting: centred and on its own, so it does not
             // read as a row.
-            Text("Made with ❤️ by\nGoldenNugget Development Team")
+            Text("由 GoldenNugget 开发团队用 ❤️ 制作\n")
                 .font(.callout)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .listRowBackground(Color.clear)
 
-            NativeNote("GoldenNugget for desktop is the original this app is "
-                + "a port of. It runs the same protocols over its own Rust and Swift "
-                + "stack instead of driving pymobiledevice3, and speaks to iOS 26 and "
-                + "27 rather than only to tethered devices.")
+            NativeNote("GoldenNugget 桌面版是本应用所移植的原始版本。"
+                + "它使用自己的 Rust 和 Swift 技术栈运行同样的协议，而不是驱动 pymobiledevice3，并且能与 iOS 26 和 27 通信，而不只是与通过有线连接设备通信。"
+                + ""
+                + "")
         }
     }
 
@@ -126,20 +126,20 @@ struct SettingsView: View {
     /// executable rather than embedded as frameworks (only `EMProxy.framework`
     /// ships as a dynamic framework in the IPA).
     private var creditsSection: some View {
-        Section("Credits") {
-            creditRow("GoldenNugget", "Desktop app · this is a port of it",
+        Section("致谢") {
+            creditRow("GoldenNugget", "桌面版应用 · 本应用是它的移植版",
                       systemImage: "desktopcomputer")
-            creditRow("idevice", "Rust device and backup stack",
+            creditRow("idevice", "Rust 设备与备份技术栈",
                       systemImage: "shippingbox")
-            creditRow("libimobiledevice", "C protocol core",
+            creditRow("libimobiledevice", "C 协议核心",
                       systemImage: "chevron.left.forwardslash.chevron.right")
-            creditRow("Minimuxer", "SideStore · tunnel and usbmux",
+            creditRow("Minimuxer", "SideStore · 隧道与 usbmux",
                       systemImage: "network")
-            creditRow("ZIPFoundation", "Archive handling",
+            creditRow("ZIPFoundation", "归档处理",
                       systemImage: "archivebox")
-            NativeNote("The vendored copies carry local patches, listed with "
-                + "the reason for each in Vendor/patches/README.md. SideStore's minimuxer "
-                + "is © 2026 SideStore.")
+            NativeNote("这些内置的副本带有本地补丁，每个补丁的原因都列在 Vendor/patches/README.md 中。"
+                + "SideStore 的 minimuxer 版权归 © 2026 SideStore 所有。"
+                + "")
         }
     }
 
@@ -162,22 +162,22 @@ struct SettingsView: View {
     /// also sits above them, because it is the answer to "why is nothing
     /// connecting", which is the question a user opens Settings with.
     private var setupSection: some View {
-        Section("Setup") {
+        Section("初始设置") {
             Button {
                 showSetupGuide = true
             } label: {
-                Label("Setup guide", systemImage: "list.number")
+                Label("设置向导", systemImage: "list.number")
             }
-            NativeNote("Checks the two things this app needs before it can reach the "
-                + "device — the LocalDevVPN tunnel and a pairing record — and walks "
-                + "through both. This is the guide a first launch opens.")
+            NativeNote("检查本应用在能够连接设备之前所需的两个条件 —— LocalDevVPN 隧道和配对记录 —— 并带你逐一完成。"
+                + "这是首次启动时会打开的指南。"
+                + "")
         }
     }
 
     // MARK: - Logs
 
     private var logsSection: some View {
-        Section("Logs") {
+        Section("日志") {
             // The two halves of a report's evidence: this one is what the host
             // decided, the other is what the protocol did.
             shareRow(title: "goldennugget.log",
@@ -194,9 +194,9 @@ struct SettingsView: View {
                 NativeNote(logs.rustStatus)
             }
             NativeNote(logs.hasApp
-                ? "A report wants both files: the app log says what was decided, "
-                  + "minimuxer.log says what the device answered."
-                : "No app log yet — it is written from the first run in this session.")
+                ? "一份报告需要两个文件：应用日志说明做出了什么决定，minimuxer.log 说明设备应答了什么。"
+                  + ""
+                : "尚无应用日志 —— 从本次会话的首次运行开始写入。")
         }
     }
 
@@ -204,7 +204,7 @@ struct SettingsView: View {
                           url: URL, available: Bool) -> some View {
         ShareLink(item: url) {
             HStack(spacing: 12) {
-                Label("\(title) (\(size) KB)", systemImage: systemImage)
+                Label("\(title)（\(size) KB）", systemImage: systemImage)
                 Spacer(minLength: 0)
             }
         }
@@ -216,8 +216,8 @@ struct SettingsView: View {
     /// Skip Setup, on its own page rather than behind the Development master: it is
     /// not a switch for working around a bug, it is part of what a run writes.
     private var applySection: some View {
-        Section("Apply") {
-            switchRow("Skip Setup",
+        Section("应用") {
+            switchRow("跳过设置",
                       note: skipSetupNote,
                       isOn: Binding(
                           get: { skipSetup.skipSetupEnabled },
@@ -228,15 +228,15 @@ struct SettingsView: View {
     /// What the switch does, in the order the two files are written.
     private var skipSetupNote: String {
         [
-            "On by default, as upstream does. Off: an apply carries only the tweaks.",
-            "On: an apply adds two files ahead of the tweaks, in this order —",
-            "1. SysSharedContainerDomain-systemgroup.com.apple.configurationprofiles/"
-                + "Library/ConfigurationProfiles/CloudConfigurationDetails.plist, "
-                + "\(SkipSetup.panes.count) setup panes marked skipped;",
-            "2. ManagedPreferencesDomain/mobile/com.apple.purplebuddy.plist, setup marked done.",
-            "The device's existing cloud configuration is not merged in (reading it needs "
-                + "a lockdown service this port has no path for), and no keybag certificate "
-                + "is generated.",
+            "默认开启，与上游一致。关闭时：应用只会携带调整项。",
+            "开启时：应用会在调整项之前添加两个文件，顺序如下 ——",
+            "1. SysSharedContainerDomain-systemgroup.com.apple.configurationprofiles/Library/ConfigurationProfiles/CloudConfigurationDetails.plist，\(SkipSetup.panes.count) 个设置面板被标记为已跳过；"
+                + ""
+                + "",
+            "2. ManagedPreferencesDomain/mobile/com.apple.purplebuddy.plist，设置已标记为完成。",
+            "设备已有的云配置不会被合并进来（读取它需要一个 lockdownd 服务，而此移植版本没有对应的路径），也不会生成密钥包证书。"
+                + ""
+                + "",
         ].joined(separator: "\n")
     }
 
@@ -252,21 +252,21 @@ struct SettingsView: View {
     /// from the reference's Settings.
     private var historySection: some View {
         Section("Operation History") {
-            TextField("Search history…", text: $historySearch)
+            TextField("搜索历史……", text: $historySearch)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
 
             Picker("Operation", selection: $historyMode) {
                 Text("All operations").tag("all")
-                Text("Apply").tag("apply")
-                Text("Reset").tag("reset")
+                Text("应用").tag("apply")
+                Text("重置").tag("reset")
             }
             .pickerStyle(.segmented)
 
             Picker("Result", selection: $historyResult) {
                 Text("All results").tag("all")
                 Text("Success").tag("success")
-                Text("Failed").tag("failed")
+                Text("失败").tag("failed")
             }
             .pickerStyle(.segmented)
 
@@ -321,7 +321,7 @@ struct SettingsView: View {
     private var historyCountLine: String {
         let matches = matchingHistory.count
         if matches > visibleHistory.count {
-            return "Showing \(visibleHistory.count) of \(matches) operations"
+            return "显示 \(matches) 项操作中的 \(visibleHistory.count) 项"
         }
         if matches > 0 {
             return "\(matches) operations found"
@@ -334,8 +334,8 @@ struct SettingsView: View {
     /// One row's line, in the reference's own vocabulary
     /// (`settings.py:823`): `when • mode • device • iOS version • result`.
     private func historyRowText(_ record: ApplyHistory.Record) -> String {
-        let mode = record.mode == "apply" ? "Apply" : "Reset"
-        let result = record.success ? "Success" : "Failed"
+        let mode = record.mode == "apply" ? "应用" : "重置"
+        let result = record.success ? "Success" : "失败"
         let device = record.device.isEmpty ? "Unknown device" : record.device
         let ios = record.ios.isEmpty ? "?" : record.ios
         return "\(Self.displayTimestamp(record.timestamp))  •  \(mode)  •  "
@@ -359,45 +359,45 @@ struct SettingsView: View {
     // MARK: - Development
 
     private var developmentSection: some View {
-        Section("Development") {
+        Section("开发") {
             Toggle(isOn: $devModeOn) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Development mode")
+                    Text("开发者模式")
                     NativeNote(devModeOn
-                        ? "The switches below are live for the next run."
-                        : "Off: runs take the normal path. Stored switches are ignored.")
+                        ? "下面的开关在下次运行时生效。"
+                        : "关闭时：运行走正常路径，已存储的开关会被忽略。")
                 }
             }
 
             if devModeOn {
-                switchRow("Force Partial Restore",
-                          note: "Takes the iOS 26 branch — a Partial Restore built "
-                              + "from nothing — even on a device that reports iOS 27+, "
-                              + "and skips the protective backup entirely.",
+                switchRow("强制部分恢复",
+                          note: "即使设备报告的是 iOS 27 或更高版本，也走 iOS 26 分支 —— 即从零构建的局部恢复 —— 并完全跳过保护性备份。"
+                              + ""
+                              + "",
                           isOn: $forcePartialRestore)
 
-                switchRow("Verbose log",
+                switchRow("详细日志",
                           note: verboseLog
-                            ? "Recording the protocol detail into minimuxer.log. "
-                              + "Off keeps the app log and the run itself, and drops "
-                              + "the per-frame lines."
-                            : "Protocol detail is not being recorded. The app log still is.",
+                            ? "将协议细节记录到 minimuxer.log。"
+                              + "关闭后会保留应用日志和运行本身，只丢弃逐帧的记录行。"
+                              + ""
+                            : "当前未记录协议细节。应用日志仍在记录。",
                           isOn: $verboseLog)
 
-                switchRow("Skip AFC media",
-                          note: "A run normally copies camera-roll media between the "
-                              + "backup and the prune. This leaves it out, which on a full "
-                              + "camera roll is the difference between minutes and seconds.",
+                switchRow("跳过 AFC 媒体",
+                          note: "一次运行通常会在备份与清理之间复制相机胶卷中的媒体。"
+                              + "此项会将其排除在外，而在相机胶卷很满时，这就是数分钟与数秒之差。"
+                              + "",
                           isOn: $skipAfcMedia)
 
-                Button("Reset switches", systemImage: "arrow.counterclockwise") {
+                Button("重置开关", systemImage: "arrow.counterclockwise") {
                     DevSettings.resetSwitches()
                     DevSettings.applyLoggingPreference()
                 }
 
-                NativeSafetyNote("These are switches, not fixes. Force Partial Restore "
-                    + "against a real iOS 27 device is expected to fail at the restore step, "
-                    + "because a synthesised manifest carries no domain registration.")
+                NativeSafetyNote("这些是开关，不是修复。"
+                    + "对真正的 iOS 27 设备强制使用局部恢复，预计会在恢复步骤失败，因为合成出来的清单不带有域注册信息。"
+                    + "")
             }
         }
     }
@@ -427,6 +427,6 @@ struct SettingsView: View {
     }
 
     private static var versionText: String {
-        "\(info("CFBundleShortVersionString")) (\(info("CFBundleVersion")))"
+        "\(info("CFBundleShortVersionString"))（\(info("CFBundleVersion")))"
     }
 }

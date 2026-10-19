@@ -59,9 +59,9 @@ struct ApplyPreview {
               let free = freeBytes, free >= 0 else { return nil }
         let threshold = max(5 * 1024 * 1024 * 1024, Int64(Double(total) * 0.10))
         if free >= threshold { return nil }
-        return String(format: "⚠ Low storage: %.1f GB free. Restoring tweaks may"
-                      + " require at least %.1f GB free and could fail if the"
-                      + " device runs out of space.",
+        return String(format: "⚠ 存储空间不足：剩余 %.1f GB。"
+                      + "恢复调整项可能至少需要 %.1f GB 可用空间，若设备空间耗尽则可能失败。"
+                      + "",
                       Double(free) / (1024.0 * 1024 * 1024),
                       Double(threshold) / (1024.0 * 1024 * 1024))
     }
@@ -109,7 +109,7 @@ struct ApplyPreview {
             let mechanism = StatusBarMechanism.mechanism(for: deviceVersion)
             let built = try statusBar.payload(for: mechanism)
             rows.append(Row(label: "Status bar "
-                + (mechanism == .classic ? "overrides (classic)" : "overrides (iOS 27 archive)"),
+                + (mechanism == .classic ? "overrides（经典）" : "overrides（iOS 27 归档）"),
                             byteCount: built.data.count))
         }
 
@@ -117,7 +117,7 @@ struct ApplyPreview {
             ? SkipSetup.build(supervised: false, organizationName: "")
             : SkipSetup.Build(payloads: [], warnings: [])
         for payload in skipSetup.payloads {
-            rows.append(Row(label: "Skip setup: \(payload.label)", byteCount: payload.byteCount))
+            rows.append(Row(label: "跳过设置：\(payload.label)", byteCount: payload.byteCount))
         }
         for warning in skipSetup.warnings { notes.append(warning) }
 

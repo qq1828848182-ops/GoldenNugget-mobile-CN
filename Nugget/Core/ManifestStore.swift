@@ -104,7 +104,7 @@ struct ManifestStore {
     private func open() throws -> OpaquePointer {
         var db: OpaquePointer?
         guard sqlite3_open(dbPath, &db) == SQLITE_OK, let db else {
-            throw GoldenNuggetError("Failed to open Manifest.db at \(dbPath)")
+            throw GoldenNuggetError("无法打开 \(dbPath) 处的 Manifest.db")
         }
         return db
     }
@@ -120,7 +120,7 @@ struct ManifestStore {
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, ManifestSchema.insertOrReplaceRow, -1, &stmt, nil) == SQLITE_OK,
               let stmt else {
-            throw GoldenNuggetError("Manifest.db: failed to prepare INSERT for \(domain)/\(relativePath)")
+            throw GoldenNuggetError("Manifest.db：无法为 \(domain)/\(relativePath) 准备 INSERT 语句")
         }
         defer { sqlite3_finalize(stmt) }
 
@@ -140,7 +140,7 @@ struct ManifestStore {
         }
         let rc = sqlite3_step(stmt)
         guard rc == SQLITE_DONE else {
-            throw GoldenNuggetError("Manifest.db: INSERT for \(domain)/\(relativePath) failed with code \(rc)")
+            throw GoldenNuggetError("Manifest.db：为 \(domain)/\(relativePath) 执行 INSERT 失败，错误码 \(rc)")
         }
     }
 
@@ -192,9 +192,9 @@ struct ManifestStore {
         guard sqlite3_prepare_v2(db, "SELECT fileID, domain, relativePath FROM Files "
                                      + "WHERE relativePath LIKE ? ORDER BY relativePath DESC",
                                  -1, &stmt, nil) == SQLITE_OK, let stmt else {
-            throw GoldenNuggetError("Manifest.db has no readable Files table "
-                + "(tables present: \(tableNames.isEmpty ? "none" : tableNames.joined(separator: ", "))). "
-                + "That is the host-written placeholder, not the database the device uploads.")
+            throw GoldenNuggetError("Manifest.db 没有可读的 Files 表（现有的表：\(tableNames.isEmpty ? "none" : tableNames.joined(separator: ", "))）。"
+                + "那是主机写入的占位文件，而不是设备上传的数据库。"
+                + "")
         }
         defer { sqlite3_finalize(stmt) }
         sqlite3_bind_text(stmt, 1, pattern, -1, ManifestSchema.transient)
@@ -270,13 +270,13 @@ struct ManifestStore {
         var outsideKeepSet: Int { rows - kept - missingPayloads }
 
         var logLine: String {
-            var line = "Pruned Manifest.db: \(kept) of \(rows) row(s) kept "
-                + "(\(missingPayloads) named by the keep-set but payload-less, "
-                + "\(outsideKeepSet) outside the keep-set), "
-                + "\(orphansRemoved) orphan payload file(s) removed."
-            line += " Kept rows by flags: \(keptFlags)."
+            var line = "已清理 Manifest.db：\(rows) 条记录中保留 \(kept) 条（其中 \(missingPayloads) 条被保留集指定但缺少载荷，\(outsideKeepSet) 条不在保留集内），移除了 \(orphansRemoved) 个孤立载荷文件。"
+                + ""
+                + ""
+                + ""
+            line += " 按标志统计的保留记录：\(keptFlags)。"
             if missingPayloads > 0 {
-                line += " A payload-less row is what the device reports as MBErrorDomain/205."
+                line += " 缺少载荷的记录正是设备报告为 MBErrorDomain/205 的情况。"
             }
             return line
         }
@@ -298,11 +298,11 @@ struct ManifestStore {
     @discardableResult
     func pruneToDiskState() -> PruneReport? {
         guard exists else {
-            AppLog.write("Prune Manifest.db: no Manifest.db at \(dbPath) — skipped")
+            AppLog.write("清理 Manifest.db：\(dbPath) 处没有 Manifest.db —— 已跳过")
             return nil
         }
         guard let db = try? open() else {
-            AppLog.write("Prune Manifest.db: could not open \(dbPath) — skipped")
+            AppLog.write("清理 Manifest.db：无法打开 \(dbPath) —— 已跳过")
             return nil
         }
         defer { sqlite3_close(db) }
@@ -319,14 +319,14 @@ struct ManifestStore {
         var keptFlags: [Int32: Int] = [:]
 
         guard sqlite3_exec(db, "BEGIN", nil, nil, nil) == SQLITE_OK else {
-            AppLog.write("Prune Manifest.db: could not begin a transaction — skipped")
+            AppLog.write("清理 Manifest.db：无法开启事务 —— 已跳过")
             return nil
         }
         var committed = false
         defer {
             if !committed {
                 sqlite3_exec(db, "ROLLBACK", nil, nil, nil)
-                AppLog.write("Prune Manifest.db: rolled back — the manifest is untouched")
+                AppLog.write("清理 Manifest.db：已回滚 —— 清单未被改动")
             }
         }
 
@@ -374,23 +374,23 @@ struct ManifestStore {
         }
 
         if payloadLess > 0 {
-            AppLog.write("Prune: dropping \(payloadLess) row(s) the keep-set named but that have no "
-                + "payload on disk (e.g. \(payloadLessSample.joined(separator: ", "))) — a file row "
-                + "without a payload is what the device reports as MBErrorDomain/205")
+            AppLog.write("清理：丢弃 \(payloadLess) 条被保留集指定但磁盘上没有载荷的记录（例如 \(payloadLessSample.joined(separator: ", "))）——缺少载荷的文件记录正是设备报告为 MBErrorDomain/205 的情况"
+                + ""
+                + "")
         }
 
         // Phase 2: rewrite the table against the keep set.
         guard sqlite3_exec(db,
                            "CREATE TEMP TABLE IF NOT EXISTS _keep (fileID TEXT)",
                            nil, nil, nil) == SQLITE_OK else {
-            AppLog.write("Prune Manifest.db: could not create the keep table — skipped")
+            AppLog.write("清理 Manifest.db：无法创建保留表 —— 已跳过")
             return nil
         }
 
         var insert: OpaquePointer?
         guard sqlite3_prepare_v2(db, "INSERT INTO _keep (fileID) VALUES (?)", -1, &insert, nil) == SQLITE_OK,
               let insert else {
-            AppLog.write("Prune Manifest.db: could not prepare the keep insert — skipped")
+            AppLog.write("清理 Manifest.db：无法准备保留表的插入语句 —— 已跳过")
             return nil
         }
         // Prepared ONCE, outside the loop: the original re-prepared the statement
@@ -406,13 +406,13 @@ struct ManifestStore {
 
         guard sqlite3_exec(db, "DELETE FROM Files WHERE fileID NOT IN (SELECT fileID FROM _keep)",
                            nil, nil, nil) == SQLITE_OK else {
-            AppLog.write("Prune Manifest.db: the row rewrite failed — skipped")
+            AppLog.write("清理 Manifest.db：记录重写失败 —— 已跳过")
             return nil
         }
         sqlite3_exec(db, "DROP TABLE _keep", nil, nil, nil)
 
         guard sqlite3_exec(db, "COMMIT", nil, nil, nil) == SQLITE_OK else {
-            AppLog.write("Prune Manifest.db: commit failed — skipped")
+            AppLog.write("清理 Manifest.db：提交失败 —— 已跳过")
             return nil
         }
         committed = true
@@ -425,7 +425,7 @@ struct ManifestStore {
         let report = PruneReport(rows: rowCount, kept: keepIDs.count,
                                  missingPayloads: payloadLess,
                                  orphansRemoved: orphansRemoved,
-                                 keptFlags: histogram.isEmpty ? "(none)" : histogram)
+                                 keptFlags: histogram.isEmpty ? "（无）" : histogram)
         AppLog.write(report.logLine)
         return report
     }
@@ -454,7 +454,7 @@ struct ManifestStore {
     /// device's own manifest).  A verdict that is always red carries no signal.
     func auditAgainstDisk() -> String {
         guard exists, let db = try? open() else {
-            return "pre-restore audit: no readable Manifest.db at \(dbPath)"
+            return "恢复前审计：\(dbPath) 处没有可读的 Manifest.db"
         }
         defer { sqlite3_close(db) }
 
@@ -464,7 +464,7 @@ struct ManifestStore {
         guard sqlite3_prepare_v2(
             db, "SELECT fileID, flags, (file IS NULL OR length(file) = 0), file FROM Files",
             -1, &stmt, nil) == SQLITE_OK, let stmt else {
-            return "pre-restore audit: could not read Manifest.db"
+            return "恢复前审计：无法读取 Manifest.db"
         }
         defer { sqlite3_finalize(stmt) }
 
@@ -517,14 +517,14 @@ struct ManifestStore {
         // half was ever counted.
         let verdict = (missingPayloads == 0 && bloblessRows == 0 && unreadableModes == 0)
             ? "consistent"
-            : "INCONSISTENT — the device cannot restore these rows"
-        var line = "pre-restore audit: \(fileRows) file row(s), \(dirRows) directory row(s), "
-            + "\(symlinkRows) symlink row(s), \(missingPayloads) missing their payload, "
-            + "\(bloblessRows) with an empty file blob, \(unreadableModes) with an unreadable Mode "
-            + "— \(verdict)"
-        if let firstMissing { line += " (first payload-less: \(firstMissing))" }
-        if let firstBlobless { line += " (first blob-less: \(firstBlobless))" }
-        if let firstUnreadable { line += " (first unreadable Mode: \(firstUnreadable))" }
+            : "不一致 —— 设备无法恢复这些记录"
+        var line = "恢复前审计：\(fileRows) 条文件记录、\(dirRows) 条目录记录、\(symlinkRows) 条符号链接记录，\(missingPayloads) 条缺少载荷，\(bloblessRows) 条的文件数据块为空，\(unreadableModes) 条的 Mode 不可读 —— \(verdict)"
+            + ""
+            + ""
+            + ""
+        if let firstMissing { line += "（首个缺少载荷：\(firstMissing)）" }
+        if let firstBlobless { line += "（首个数据块为空：\(firstBlobless)）" }
+        if let firstUnreadable { line += "（首个 Mode 不可读：\(firstUnreadable)）" }
         return line
     }
 
@@ -547,14 +547,14 @@ struct ManifestStore {
     /// Returns one log line; call it once, right after injecting.
     func blobKeySample(ours: String) -> String {
         guard exists, let db = try? open() else {
-            return "blob keys: no readable Manifest.db at \(dbPath)"
+            return "数据块键：\(dbPath) 处没有可读的 Manifest.db"
         }
         defer { sqlite3_close(db) }
 
         var stmt: OpaquePointer?
         guard sqlite3_prepare_v2(db, "SELECT fileID, file FROM Files WHERE file IS NOT NULL",
                                  -1, &stmt, nil) == SQLITE_OK, let stmt else {
-            return "blob keys: could not read Manifest.db"
+            return "数据块键：无法读取 Manifest.db"
         }
         defer { sqlite3_finalize(stmt) }
 
@@ -579,10 +579,10 @@ struct ManifestStore {
             }
             if oursKeys != nil, deviceKeys != nil { break }
         }
-        return "blob keys: ours=[\(oursKeys ?? "row not found")] "
-            + "device=[\(deviceKeys ?? "no other row to compare against")]"
-            + " | shape ours: \(oursShape ?? "-")"
-            + " | shape device: \(deviceShape ?? "-")"
+        return "数据块键：本机=[\(oursKeys ?? "row not found")] 设备=[\(deviceKeys ?? "no other row to compare against")] | 本机结构：\(oursShape ?? "-") | 设备结构：\(deviceShape ?? "-")"
+            + ""
+            + ""
+            + ""
     }
 
     /// The largest `InodeNumber` any row in this manifest claims, or 0.

@@ -25,7 +25,7 @@ final class CancelFlag: @unchecked Sendable {
         lock.lock()
         flag = true
         lock.unlock()
-        AppLog.write("⏹ stop requested — the current blocking call will be abandoned at the next check")
+        AppLog.write("⏹ 已请求停止 —— 当前阻塞的调用将在下一次检查时被放弃")
     }
 
     func clear() {
@@ -175,8 +175,8 @@ enum StallGuard {
             if once.isSettled { return }
 
             if CancelFlag.shared.isRequested {
-                AppLog.write("⏹ \(label): cancelled by the user — abandoning the call "
-                    + "(a blocked Rust read cannot be interrupted, only walked away from)")
+                AppLog.write("⏹ \(label)：已被用户取消 —— 正在放弃该调用（被阻塞的 Rust 读取无法中断，只能放弃）"
+                    + "")
                 // Record the second fact: this call is still running and nobody
                 // is waiting for it any more.
                 InFlightCall.shared.noteAbandoned(label: label)
@@ -197,18 +197,18 @@ enum StallGuard {
                     let held = Int(Date().timeIntervalSince(from))
                     if held >= silentHandshakeSeconds, !handshakeReported {
                         handshakeReported = true
-                        AppLog.write("⏱ \(label): the device has not sent its first DeviceLink "
-                            + "message for \(held)s. The mobilebackup2 client is a pure reader at "
-                            + "this point — the device initiates with DLMessageVersionExchange and "
-                            + "this side only answers — so nothing the app sends can cause it. The "
-                            + "device-side daemon is the one not talking, and it stays wedged across "
-                            + "app restarts, so REBOOT THE DEVICE before the next attempt. "
-                            + "Still waiting; press Stop to end this run.")
+                        AppLog.write("⏱ \(label)：设备在 \(held)s 内没有发出它的第一条 DeviceLink 消息。"
+                            + "此时 mobilebackup2 客户端只是纯粹的读取方 —— 由设备端用 DLMessageVersionExchange 发起，本方只负责应答 —— 因此本应用发送的任何内容都不会导致这种情况。"
+                            + "设备端的守护进程才是不说话的一方，且它在应用重启后依然卡死，所以下一次尝试前请先重启设备。"
+                            + "仍在等待；按「停止」结束本次运行。"
+                            + ""
+                            + ""
+                            + "")
                     }
                 } else {
                     if handshakeSince != nil {
-                        AppLog.write("⏱ \(label): the device answered the handshake — that verdict "
-                            + "is withdrawn")
+                        AppLog.write("⏱ \(label)：设备已应答握手 —— 先前的判定撤销"
+                            + "")
                     }
                     handshakeSince = nil
                     handshakeReported = false
@@ -226,9 +226,9 @@ enum StallGuard {
                     // that no longer holds, so they are withdrawn rather than
                     // left to be read as current.
                     if probed || crawlReportedAt != nil {
-                        AppLog.write("⏱ \(label): the device is talking again "
-                            + "(\(s.dlMessages) DL message(s) this run) — earlier stall verdicts "
-                            + "withdrawn")
+                        AppLog.write("⏱ \(label)：设备恢复通信（本次运行有 \(s.dlMessages) 条 DL 消息）—— 先前的停滞判定撤销"
+                            + ""
+                            + "")
                     }
                     probed = false
                     probeVerdict = nil
@@ -265,7 +265,7 @@ enum StallGuard {
                     if crawlReportedAt == nil || now.timeIntervalSince(crawlReportedAt!) >= noticeInterval {
                         crawlReportedAt = now
                         lastNotice = now
-                        AppLog.write("⏱ \(label): \(report)")
+                        AppLog.write("⏱ \\(label)：\\(report)")
                     }
                 }
             }
@@ -282,15 +282,15 @@ enum StallGuard {
                 probed = true
                 let result = await probe()
                 probeVerdict = result.detail
-                AppLog.write("⏱ \(label): nothing for \(quiet)s — out-of-band check: \(result.detail)")
+                AppLog.write("⏱ \(label)：已静默 \(quiet)s —— 带外检查：\(result.detail)")
             }
 
             if now.timeIntervalSince(lastNotice) >= noticeInterval {
                 lastNotice = now
-                let why = probeVerdict.map { "out-of-band check said: \($0)" }
-                    ?? "no out-of-band verdict, so this is simply the quiet window"
-                AppLog.write("⏱ \(label): still quiet — \(quiet)s since the last sign of life, and "
-                    + "\(why). Waiting; press Stop to end this run.")
+                let why = probeVerdict.map { "带外检查结果：\($0)" }
+                    ?? "没有带外判定结果，因此这只是静默窗口"
+                AppLog.write("⏱ \(label)：仍然静默 —— 距上一次有活动迹象已 \(quiet)s，且 \(why)。"
+                    + "继续等待；按「停止」结束本次运行。")
             }
         }
     }
@@ -334,22 +334,22 @@ enum StallGuard {
 
         // Full phrases, not fragments: "the backlog has still growing" shipped
         // once and read as a bug in itself.
-        let shape = gap > (first.gap ?? gap) ? "is still growing" : "held steady"
+        let shape = gap > (first.gap ?? gap) ? "仍在增长" : "保持不变"
         // Whether the peer is even trying to fill the gap.  Measured 2026-09-19:
         // the device re-sent NOTHING for 88 s while 3.1 MB sat in the reorder
         // buffer, so patience was never going to be the remedy either.
         let retryNote = sample.retransmits > 0
-            ? "the device re-sent \(sample.retransmits) range(s) meanwhile, so the gap is filling "
-                + "slowly rather than never"
-            : "the device has re-sent NOTHING meanwhile, so no amount of waiting will fill the gap"
+            ? "与此同时设备重发了 \(sample.retransmits) 个区段，因此缺口在缓慢填补，而不是永不填补"
+                + ""
+            : "与此同时设备没有重发任何内容，因此再等多久也填不上这个缺口"
                 + (sample.duplicateAcks > 0
-                    ? " (jktcp sent it ×\(sample.duplicateAcks) duplicate ACK(s), so the ask was made)"
-                    : " (jktcp sent no duplicate ACK(s), so the hole was never announced)")
-        return "the tunnel stopped delivering — jktcp is holding \(gap / 1024) KB of the device's "
-            + String(format: "stream behind an unfilled gap and delivered %.1f KB/s for %.0fs",
+                    ? "（jktcp 为此发送了 ×\(sample.duplicateAcks) 个重复 ACK，说明请求确实发出过）"
+                    : "（jktcp 没有发送任何重复 ACK，说明这个空洞从未被通告）")
+        return "隧道已停止投递 —— jktcp 将一个未填补的缺口之后的 \(gap / 1024) KB 设备数据"
+            + String(format: "流所阻塞，并在 %.0fs 内只投递了 %.1f KB/s",
                      rate / 1024, span)
-            + " (\(segments) new out-of-order segment(s) meanwhile, the backlog \(shape) for the "
-            + "whole window, and \(retryNote)). Not abandoning the call: a mid-flight teardown is "
-            + "what wedges the device daemon, so this waits and reports instead."
+            + "（与此同时新增 \(segments) 个乱序区段，整个窗口内积压 \(shape)，且 \(retryNote)）。"
+            + "不会放弃该调用：正是传输中途的强制中断会让设备守护进程卡死，因此这里选择等待并上报。"
+            + ""
     }
 }

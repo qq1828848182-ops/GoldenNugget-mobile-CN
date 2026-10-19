@@ -116,9 +116,9 @@ enum BackupInjector {
                              relativePath: row.path, flags: row.flags, blob: blob)
         }
 
-        AppLog.write("Injected system plist \(domain)/\(relativePath) "
-            + "(fileID=\(fileID), \(contents.count) bytes, owner \(systemOwner), class "
-            + "\(PROTECTION_CLASS_SYSTEM_FILE))")
+        AppLog.write("已注入系统 plist \(domain)/\(relativePath)（fileID=\(fileID)，\(contents.count) 字节，所有者 \(systemOwner)，类别 \(PROTECTION_CLASS_SYSTEM_FILE)）"
+            + ""
+            + "")
         AppLog.write(store.blobKeySample(ours: fileID))
     }
 
@@ -162,7 +162,7 @@ enum BackupInjector {
         // Fallback: if the device did not upload the host-side backup metadata
         // (Info.plist / Status.plist / Manifest.plist), write minimal valid ones
         // — restore refuses a backup without them.
-        let manifestStage = StageTimer("ensure host-side manifests")
+        let manifestStage = StageTimer("确保主机侧清单就绪")
 
         // AppDomain-* file rows are not self-describing.  mobilebackup2 resolves
         // the suffix as an installed application and refuses the restore with
@@ -182,8 +182,8 @@ enum BackupInjector {
             for bundleID in appBundleIDs {
                 let entry = try await Minimuxer.shared().appFactoryEntry(bundleId: bundleID)
                 records[bundleID] = entry
-                AppLog.write("Registered restore AppDomain for \(bundleID) "
-                    + "(\(entry.keys.count) installation_proxy field(s))")
+                AppLog.write("已为 \(bundleID) 注册恢复用的 AppDomain（\(entry.keys.count) 个 installation_proxy 字段）"
+                    + "")
             }
             applications = records
         }
@@ -197,7 +197,7 @@ enum BackupInjector {
             // Nothing to prune -- this backup is what the run built -- and no
             // sqlite Manifest.db at all: the device reads Manifest.mbdb and
             // asks for each payload by its fileID.
-            let mbdbStage = StageTimer("write Manifest.mbdb")
+            let mbdbStage = StageTimer("写入 Manifest.mbdb")
             let rows = try MBDBManifest.rows(for: tweakPayloads)
             try MBDBManifest.encode(rows).write(to: deviceDir.appendingPathComponent("Manifest.mbdb"),
                                                 options: .atomic)
@@ -209,28 +209,28 @@ enum BackupInjector {
             }
             mbdbStage.done()
             try? FileManager.default.removeItem(at: deviceDir.appendingPathComponent("Manifest.db"))
-            AppLog.write("Partial Restore: \(rows.count) MBDB row(s), "
-                         + "\(tweakPayloads.count) payload(s) flat")
+            AppLog.write("部分恢复：\(rows.count) 条 MBDB 记录，\(tweakPayloads.count) 份载荷平铺写入"
+                         + "")
             return
         }
 
         if prune {
-            AppLog.write("Pruning Manifest.db…")
-            let pruneStage = StageTimer("prune Manifest.db")
+            AppLog.write("正在清理 Manifest.db……")
+            let pruneStage = StageTimer("清理 Manifest.db")
             store.pruneToDiskState()
             pruneStage.done()
         } else {
-            AppLog.write("Partial Restore: synthesising the backup, nothing to prune.")
+            AppLog.write("部分恢复：正在合成备份，没有需要清理的内容。")
         }
 
-        let tweakStage = StageTimer("inject tweaks")
-        AppLog.write("Injecting \(tweakPayloads.count) tweak file(s)…")
+        let tweakStage = StageTimer("注入调整项")
+        AppLog.write("正在注入 \(tweakPayloads.count) 个调整项文件……")
         let report = try TweakInjector.inject(into: deviceDir, payloads: tweakPayloads)
         tweakStage.done(report.summary)
-        AppLog.write("Tweaks injected: \(report.summary)")
+        AppLog.write("调整项已注入：\(report.summary)")
         for domain in report.unverifiedDomains {
-            AppLog.write("note: the \(domain) row shape is measured from the device's own "
-                + "backup but has not been confirmed by a run yet")
+            AppLog.write("注意：\(domain) 的记录结构是根据设备自身的备份测量得出的，但尚未经运行验证"
+                + "")
         }
     }
 }

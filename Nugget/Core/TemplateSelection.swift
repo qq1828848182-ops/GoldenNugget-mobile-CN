@@ -39,8 +39,8 @@ struct TemplateSelection {
     var undeliverable: [(template: TemplateFile, reason: String)] {
         templates.compactMap { template in
             guard template.requiresSparserestore else { return nil }
-            return (template, "it asks for sparserestore (\(template.domain)), which this app "
-                + "does not implement — it delivers through a protective backup instead")
+            return (template, "它要求使用 sparserestore（\(template.domain)），而本应用并未实现该方式——而是通过保护性备份来投放"
+                + "")
         }
     }
 
@@ -102,7 +102,7 @@ enum TemplateImports {
         do {
             try FileManager.default.copyItem(at: source, to: destination)
         } catch {
-            throw TemplateFile.fail("Could not copy \(source.lastPathComponent) into the app: "
+            throw TemplateFile.fail("无法将 \(source.lastPathComponent) 复制到应用中："
                 + error.localizedDescription)
         }
         do {
@@ -335,8 +335,8 @@ enum TemplateDelivery {
         try collect(from: extracted, base: extracted, domain: domain,
                     payloads: &payloads, log: log)
         if payloads.isEmpty {
-            log("    ⚠️ \(template.title): nothing to deliver — its extracted tree has no "
-                + "\"container\" folder, which is where a template keeps the files it restores.")
+            log("    ⚠️ \(template.title)：无可投放内容——其解压目录树中没有 \"container\" 文件夹，而模板所恢复的文件正存放于该文件夹中。"
+                + "")
         }
         return payloads
     }

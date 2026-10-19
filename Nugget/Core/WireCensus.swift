@@ -153,15 +153,15 @@ final class WireCensus: @unchecked Sendable {
             // Counted before the out-of-order guard below, because neither line
             // matches it.  Together they are the whole difference between a hole
             // that is closing and one that is permanent.
-            if line.contains("duplicate data seq=") {
+            if line.contains("重复数据 seq=") {
                 sample.retransmits += 1
             } else if line.contains("held=false") {
                 sample.heldDropped += 1
             }
-            if line.contains("duplicate ACK for hp=") {
+            if line.contains("重复 ACK，对应 hp=") {
                 sample.duplicateAcks += 1
             }
-            guard line.contains("out-of-order seq=") else { continue }
+            guard line.contains("乱序 seq=") else { continue }
             sample.outOfOrder += 1
             if let value = number(after: "expected=", in: line) { sample.expected = value }
             if let value = number(after: "seq=", in: line) { sample.seq = value }
@@ -197,24 +197,24 @@ final class WireCensus: @unchecked Sendable {
     /// Both look like a hung progress bar.
     static func healthLine() -> String {
         let s = totals()
-        var line = "\(s.dlMessages) DL message(s) this run"
+        var line = "\(s.dlMessages) 条 DL 消息（本次运行）"
         if s.outOfOrder > 0 {
-            line += ", jktcp out-of-order ×\(s.outOfOrder)"
+            line += "，jktcp 乱序 ×\(s.outOfOrder)"
             if let gap = s.gap, gap >= 64 * 1024 {
-                line += String(format: ", %.1f MB stuck behind an unfilled gap",
+                line += String(format: "，%.1f MB 卡在未填补的空洞之后",
                                Double(gap) / 1_048_576.0)
             }
             // The half that decides whether patience is the right answer at all.
             // Zero retransmissions means the hole cannot close by waiting.
             line += s.retransmits > 0
-                ? ", peer retransmitted ×\(s.retransmits)"
-                : ", peer has retransmitted NOTHING"
+                ? "，对端重传 ×\(s.retransmits)"
+                : "，对端没有重传任何内容"
             line += s.duplicateAcks > 0
-                ? ", jktcp sent ×\(s.duplicateAcks) duplicate ACK(s)"
-                : ", jktcp sent no duplicate ACK(s)"
+                ? "，jktcp 发送了 ×\(s.duplicateAcks) 个重复 ACK"
+                : "，jktcp 没有发送任何重复 ACK"
         }
         if s.heldDropped > 0 {
-            line += ", \(s.heldDropped) segment(s) refused (reorder window full)"
+            line += "，\(s.heldDropped) 个分片被拒绝（重排窗口已满）"
         }
         return line
     }
@@ -232,27 +232,27 @@ final class WireCensus: @unchecked Sendable {
         var sample = RustWireSample()
         absorb(lines, into: &sample)
         guard sample.outOfOrder > 0 else {
-            return "  jktcp: 0 out-of-order segments — the tunnel delivered everything it received"
+            return "  jktcp：0 个乱序分片 — 隧道把收到的内容全部送达了"
         }
-        var line = "  jktcp: \(sample.outOfOrder) out-of-order segment(s)"
+        var line = "  jktcp：\(sample.outOfOrder) 个乱序分片"
         if let gap = sample.gap {
-            line += ", \(gap / 1024) KB stuck behind an unfilled gap"
+            line += "，\(gap / 1024) KB 卡在未填补的空洞之后"
             if let seq = sample.seq, let expected = sample.expected {
-                line += " (device at byte \(seq), tunnel can only deliver up to \(expected))"
+                line += "（设备停在字节 \(seq)，隧道最多只能送到 \(expected)）"
             }
         }
         // Whether the hole can still close.  This clause is the one that
         // separates "the peer is recovering, give it time" from "the peer is not
         // coming back for that range", and those two call for opposite actions.
         line += sample.retransmits > 0
-            ? "; the peer re-sent \(sample.retransmits) range(s), so the gap is being worked on"
-            : "; the peer has re-sent NOTHING — this gap does not close by waiting"
+            ? "；对端重发了 \(sample.retransmits) 个区段，说明这个空洞正在被处理"
+            : "；对端没有重发任何内容 — 干等不会让这个空洞闭合"
         line += sample.duplicateAcks > 0
-            ? " (jktcp did put ×\(sample.duplicateAcks) duplicate ACK(s) on the wire, so the ask was made)"
-            : " (jktcp sent no duplicate ACK(s) at all, so the peer was never asked to retransmit)"
+            ? "（jktcp 确实发出了 ×\(sample.duplicateAcks) 个重复 ACK，所以请求已经发出）"
+            : "（jktcp 完全没有发送重复 ACK，所以从未请求对端重传）"
         if sample.heldDropped > 0 {
-            line += ". \(sample.heldDropped) segment(s) were refused (reorder window full), so part "
-                + "of the stream was dropped rather than held"
+            line += "。"
+                + "有 \(sample.heldDropped) 个区段因重排序窗口已满而被拒绝，因此数据流中有部分被丢弃，而不是被保留"
         }
         return line
     }

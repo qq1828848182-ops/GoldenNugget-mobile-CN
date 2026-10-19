@@ -62,14 +62,14 @@ enum TemplateArchive {
                 let relative = entry.path
                 guard !relative.hasPrefix("/"),
                       !relative.split(separator: "/").contains("..") else {
-                    throw TemplateFile.TemplateError("the archive holds an entry that escapes the extraction "
-                        + "directory (\(relative)).")
+                    throw TemplateFile.TemplateError("压缩包中包含一个会逃逸出解压目录的条目（\(relative)）。"
+                        + "")
                 }
                 let target = destination.appendingPathComponent(relative)
                 guard target.standardizedFileURL.path
                     .hasPrefix(destination.standardizedFileURL.path) else {
-                    throw TemplateFile.TemplateError("refusing to write \(relative) outside the extraction "
-                        + "directory.")
+                    throw TemplateFile.TemplateError("拒绝将 \(relative) 写入解压目录之外。"
+                        + "")
                 }
                 if entry.type == .directory {
                     try? fm.createDirectory(at: target, withIntermediateDirectories: true)
@@ -143,8 +143,8 @@ enum TemplateArchive {
                       !relative.split(separator: "/").contains(".."),
                       target.standardizedFileURL.path
                         .hasPrefix(destination.standardizedFileURL.path) else {
-                    throw TemplateFile.TemplateError("refusing to write \(relative) outside the extraction "
-                        + "directory.")
+                    throw TemplateFile.TemplateError("拒绝将 \(relative) 写入解压目录之外。"
+                        + "")
                 }
                 if isDirectory.boolValue {
                     try? fm.createDirectory(at: target, withIntermediateDirectories: true)
@@ -351,7 +351,7 @@ static func stagingDirectory() throws -> URL {
             throw TemplateError("\(jsonPath) has no \"author\".")
         }
         self.author = author
-        self.description = data["description"] as? String
+        self.description = data["描述"] as? String
 
         // MARK: the version gates
 
@@ -374,9 +374,9 @@ static func stagingDirectory() throws -> URL {
         if let deviceVersion, !deviceVersion.isEmpty {
             if let minVersion = self.minVersion {
                 guard let atLeast = PosterBoard.compareVersion(deviceVersion, minVersion) else {
-                    throw TemplateError("This device reports iOS \"\(deviceVersion)\", which is "
-                        + "not a version, so \(url.lastPathComponent)'s iOS \(minVersion) "
-                        + "requirement cannot be checked.")
+                    throw TemplateError("此设备报告的 iOS 版本为 \"\(deviceVersion)\"，并非有效版本号，因此无法检查 \(url.lastPathComponent) 的 iOS \(minVersion) 最低版本要求。"
+                        + ""
+                        + "")
                 }
                 guard atLeast >= 0 else {
                     throw TemplateError("\(url.lastPathComponent) requires iOS \(minVersion). "
@@ -385,9 +385,9 @@ static func stagingDirectory() throws -> URL {
             }
             if let maxVersion = self.maxVersion {
                 guard let atMost = PosterBoard.compareVersion(deviceVersion, maxVersion) else {
-                    throw TemplateError("This device reports iOS \"\(deviceVersion)\", which is "
-                        + "not a version, so \(url.lastPathComponent)'s iOS \(maxVersion) ceiling "
-                        + "cannot be checked.")
+                    throw TemplateError("此设备报告的 iOS 版本为 \"\(deviceVersion)\"，并非有效版本号，因此无法检查 \(url.lastPathComponent) 的 iOS \(maxVersion) 版本上限。"
+                        + ""
+                        + "")
                 }
                 guard atMost <= 0 else {
                     throw TemplateError("\(url.lastPathComponent) supports up to iOS \(maxVersion). "
@@ -434,8 +434,8 @@ static func stagingDirectory() throws -> URL {
                     do {
                         try bytes.write(to: target)
                     } catch {
-                        throw TemplateError("Could not stage \(entryName) out of "
-                            + "\(url.lastPathComponent): \(error.localizedDescription)")
+                        throw TemplateError("无法将 \(entryName) 从 \(url.lastPathComponent) 暂存出来：\(error.localizedDescription)"
+                            + "")
                     }
                     // `clean_path` is the entry's path with the base stripped,
                     // and that is the key `previews` is written against.
@@ -489,7 +489,7 @@ static func stagingDirectory() throws -> URL {
                     + "object.")
             }
             guard let typeName = optionData["type"] as? String else {
-                throw TemplateError("An option in \(jsonPath) has no \"type\".")
+                throw TemplateError("\(jsonPath) 中的某个选项缺少 \"type\"。")
             }
             switch TemplateOptionKind(rawValue: typeName) {
             case .replace:
@@ -505,8 +505,8 @@ static func stagingDirectory() throws -> URL {
                 // reference turns it into exactly that (`change_bundle_id`).
                 bundleIDOption = true
             case .none:
-                throw TemplateError("\"\(typeName)\" is not an option type this app knows. The "
-                    + "types are: replace, remove, set, picker, bundle_id.")
+                throw TemplateError("\"\(typeName)\" 不是本应用已知的选项类型。"
+                    + "可用类型：replace、remove、set、picker、bundle_id。")
             }
         }
         self.options = parsed

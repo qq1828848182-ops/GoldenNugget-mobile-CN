@@ -57,9 +57,9 @@ struct XMLScanner {
         guard cursor + 1 < characters.count, characters[cursor + 1] == "?" else { return "" }
         let start = cursor
         guard consume("<?xml") else {
-            throw TemplateXML.ParseError(reason: "the XML's first construct is a processing "
-                + "instruction rather than a declaration. This editor only reads documents "
-                + "that start with `<?xml …?>`.")
+            throw TemplateXML.ParseError(reason: "该 XML 的第一个结构是处理指令而非声明。"
+                + "本编辑器只读取以 `<?xml …?>` 开头的文档。"
+                + "")
         }
         guard consumeUntil("?>") else {
             throw TemplateXML.ParseError(reason: "the XML declaration is never closed.")
@@ -112,12 +112,12 @@ struct XMLScanner {
     mutating func consumeElement() throws -> TemplateXML.Node {
         skipWhitespace()
         guard consume("<") else {
-            throw TemplateXML.ParseError(reason: "expected an element, found \"\(rest)\".")
+            throw TemplateXML.ParseError(reason: "应为元素，却发现了 \"\(rest)\"。")
         }
         guard cursor < characters.count, !characters[cursor].isWhitespace,
               characters[cursor] != "/", characters[cursor] != ">" else {
-            throw TemplateXML.ParseError(reason: "the XML has a tag with no name (\"<\" "
-                + "followed by \"\(rest)\").")
+            throw TemplateXML.ParseError(reason: "该 XML 有一个没有名称的标签（\"<\" 之后为 \"\(rest)\"）。"
+                + "")
         }
         let tag = try consumeName()
 
@@ -136,8 +136,8 @@ struct XMLScanner {
             // Two tag names in a row with nothing between them is a malformed
             // file, and reading on would merge two attributes into one.
             guard cursor > beforeWhitespace else {
-                throw TemplateXML.ParseError(reason: "the `<\(tag)>` tag has two attributes "
-                    + "with nothing between them.")
+                throw TemplateXML.ParseError(reason: "标签 `<\(tag)>` 上有两个属性之间没有任何内容。"
+                    + "")
             }
             attributes.append(try consumeAttribute(in: tag))
         }
@@ -163,9 +163,9 @@ struct XMLScanner {
         // default namespace and never a prefix, so one appearing here is either
         // a different document or an edit this editor should not make blind.
         if name.contains(":") {
-            throw TemplateXML.ParseError(reason: "the XML uses the namespace prefix "
-                + "\"\(name)\", which this editor does not read. CoreAnimation documents "
-                + "declare their namespace as the default one, with no prefix.")
+            throw TemplateXML.ParseError(reason: "该 XML 使用了命名空间前缀 \"\(name)\"，本编辑器不予读取。"
+                + "CoreAnimation 文档始终将命名空间声明为默认命名空间，不带前缀。"
+                + "")
         }
         return name
     }
@@ -174,13 +174,13 @@ struct XMLScanner {
         let name = try consumeName()
         skipWhitespace()
         guard consume("=") else {
-            throw TemplateXML.ParseError(reason: "the attribute \"\(name)\" on `<\(tag)>` has "
-                + "no value.")
+            throw TemplateXML.ParseError(reason: "`<\(tag)>` 上的属性 \"\(name)\" 没有值。"
+                + "")
         }
         skipWhitespace()
         guard let quote = peek, quote == "\"" || quote == "'" else {
-            throw TemplateXML.ParseError(reason: "the attribute \"\(name)\" on `<\(tag)>` is "
-                + "not quoted. This editor only reads quoted values.")
+            throw TemplateXML.ParseError(reason: "`<\(tag)>` 上的属性 \"\(name)\" 未加引号。"
+                + "本编辑器只读取带引号的值。")
         }
         cursor += 1
         var raw = ""
@@ -188,15 +188,15 @@ struct XMLScanner {
             // `<` cannot appear in an attribute value in a well-formed document,
             // and reading past it would swallow the rest of the tag.
             if characters[cursor] == "<" {
-                throw TemplateXML.ParseError(reason: "the attribute \"\(name)\" on `<\(tag)>` "
-                    + "contains a `<`, which no well-formed XML does.")
+                throw TemplateXML.ParseError(reason: "`<\(tag)>` 上的属性 \"\(name)\" 含有 `<`，这不符合任何格式良好的 XML。"
+                    + "")
             }
             raw.append(characters[cursor])
             cursor += 1
         }
         guard cursor < characters.count else {
-            throw TemplateXML.ParseError(reason: "the attribute \"\(name)\" on `<\(tag)>` is "
-                + "never closed.")
+            throw TemplateXML.ParseError(reason: "`<\(tag)>` 上的属性 \"\(name)\" 从未闭合。"
+                + "")
         }
         cursor += 1   // the closing quote
         return (name, try TemplateXML.unescape(raw))
@@ -219,19 +219,19 @@ struct XMLScanner {
 
         while true {
             guard cursor < characters.count else {
-                throw TemplateXML.ParseError(reason: "the `<\(node.tag)>` element is never closed.")
+                throw TemplateXML.ParseError(reason: "元素 `<\(node.tag)>` 从未闭合。")
             }
             if characters[cursor] == "<" {
                 if consume("</") {
                     skipWhitespace()
                     let closing = try consumeName()
                     guard closing == node.tag else {
-                        throw TemplateXML.ParseError(reason: "`<\(node.tag)>` is closed by "
-                            + "`</\(closing)>`.")
+                        throw TemplateXML.ParseError(reason: "`<\(node.tag)>` 却被 `</\(closing)>` 闭合。"
+                            + "")
                     }
                     skipWhitespace()
                     guard consume(">") else {
-                        throw TemplateXML.ParseError(reason: "the `</\(closing)>` tag is malformed.")
+                        throw TemplateXML.ParseError(reason: "`</\(closing)>` 标签格式有误。")
                     }
                     flushText()
                     return
@@ -261,10 +261,10 @@ struct XMLScanner {
                     continue
                 }
                 if consume("<!") {
-                    throw TemplateXML.ParseError(reason: "the XML declares a "
-                        + "\"\(String(characters[cursor...].prefix(20)))\", which this editor "
-                        + "does not read. A CoreAnimation document has no DTD and no entities "
-                        + "beyond the five predefined ones.")
+                    throw TemplateXML.ParseError(reason: "该 XML 声明了一个 \"\(String(characters[cursor...].prefix(20)))\"，本编辑器不予读取。"
+                        + "CoreAnimation 文档没有 DTD，也没有五种预定义实体之外的实体。"
+                        + ""
+                        + "")
                 }
                 flushText()
                 node.content.append(.element(try consumeElement()))

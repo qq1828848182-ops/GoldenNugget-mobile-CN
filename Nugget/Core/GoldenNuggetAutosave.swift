@@ -31,7 +31,7 @@ enum GoldenNuggetAutosave {
     /// spaces, `_` and `-`).
     static let presetName = "AutoSave"
     /// `_save_autosave_preset`'s description argument, verbatim.
-    static let description = "Automatic save of last tweak configuration"
+    static let description = "自动保存上次的调整项配置"
     /// `_save_autosave_preset`'s `tags` argument, verbatim.
     static let tags = ["auto"]
     /// `PRESET_VERSION` (`preset_manager.py:23`).
@@ -172,7 +172,7 @@ enum GoldenNuggetAutosave {
     private static func existingCreatedAt() -> Int? {
         guard let data = try? Data(contentsOf: fileURL),
               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let metadata = root["metadata"] as? [String: Any]
+              let metadata = root["元数据"] as? [String: Any]
         else { return nil }
         return (metadata["created_at"] as? NSNumber)?.intValue
     }

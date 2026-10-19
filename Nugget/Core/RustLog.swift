@@ -45,7 +45,7 @@ enum RustLog {
         // one's (a stale count would make the stall guard's crawl verdict look
         // satisfied before the tunnel has sent a single byte).
         WireCensus.shared.reset(from: offset)
-        AppLog.write("rust log mark: byte \(offset) (excerpts from here cover only this run)")
+        AppLog.write("Rust 日志标记：第 \(offset) 字节（此后的摘录仅覆盖本次运行）")
         return offset
     }
 
@@ -66,19 +66,19 @@ enum RustLog {
     /// says whether that is fixable), a 0-byte file (sink armed, the device has
     /// simply not produced a Rust line yet), and real bytes.
     static func status() -> String {
-        let rc = initResult.map { String(describing: $0) } ?? "not called"
+        let rc = initResult.map { String(describing: $0) } ?? "未调用"
         let bytes = size()
         let state: String
         if !fileExists {
             let parent = url.deletingLastPathComponent()
             let parentExists = FileManager.default.fileExists(atPath: parent.path)
-            state = "no file at \(url.path) (parent dir exists=\(parentExists))"
+            state = "\(url.path) 处没有文件（父目录是否存在=\(parentExists)）"
         } else if bytes == 0 {
-            state = "0 B — sink armed, no Rust output yet"
+            state = "0 B —— 输出已就绪，尚无 Rust 输出"
         } else {
             state = "\(bytes) B"
         }
-        return "minimuxer.log: init rc=\(rc), \(state)"
+        return "minimuxer.log：init rc=\(rc)，\(state)"
     }
 
     // MARK: - Keyword sets
@@ -91,39 +91,39 @@ enum RustLog {
     /// runs on — the layer that produces "channel closed").
     static let verdictKeywords: [String] = [
         // ── mobilebackup2 protocol layer ────────────────────────────────────
-        "DeviceLink version exchange",   // dl_version_exchange() entered
-        "expected DLMessageVersionExchange",   // device sent something else
-        "expected DLMessageDeviceReady",
-        "Invalid DL message format",
-        "mobilebackup2 version exchange",
-        "Negotiated protocol version",
-        "Version exchange failed",
-        "Sending device link message",
-        "Received DL message",
-        "Backup start",                  // "Backup start failed with error: {error:?}"
-        "Backup started successfully",
-        "Restore start",                 // "Restore start failed with error: {error:?}"
-        "Restore started successfully",   // the restore-side twin of the above:
+        "DeviceLink 版本交换",   // dl_version_exchange() entered
+        "预期收到 DLMessageVersionExchange",   // device sent something else
+        "预期收到 DLMessageDeviceReady",
+        "无效的 DL 消息格式",
+        "mobilebackup2 版本交换",
+        "已协商的协议版本",
+        "版本交换失败",
+        "正在发送设备链路消息",
+        "已收到 DL 消息",
+        "备份开始",                  // "Backup start failed with error: {error:?}"
+        "备份已成功开始",
+        "恢复开始",                 // "Restore start failed with error: {error:?}"
+        "恢复已成功开始",   // the restore-side twin of the above:
                                           // without it, a restore failure shows
                                           // no phase marker at all
-        "Backup info request failed",
-        "Device requested file",         // device started streaming -> protocol got past auth
-        "Failed to send file",           // our delegate could not serve a requested file
-        "Unsupported DL message",
-        "Multi status",
+        "备份信息请求失败",
+        "设备请求了文件",         // device started streaming -> protocol got past auth
+        "发送文件失败",           // our delegate could not serve a requested file
+        "不支持的 DL 消息",
+        "多重状态",
         "ErrorCode",
         // ── jktcp: the verdict on WHY the flow died ────────────────────────
-        "RST on hp=",                    // device sent RST
-        "timed out after",               // N retransmissions unACKed -> path dead
-        "retransmitting",                // first sign of an unACKed write
-        "channel closed",                // generic flow-gone (FIN / pump death)
+        "hp= 上的 RST",                    // device sent RST
+        "超时时间已过",               // N retransmissions unACKed -> path dead
+        "正在重传",                // first sign of an unACKed write
+        "通道已关闭",                // generic flow-gone (FIN / pump death)
         // `out-of-order seq=` is deliberately NOT in this list: an 84 s flood of
         // it is exactly what a lost-datagram stall looks like, and 3000 matching
         // lines would push the last real protocol event out of the excerpt's
         // tail slice. It is summarised in one line instead (see
         // `transportCensus`), so the excerpt keeps ending on "the last thing the
         // device actually said".
-        "duplicate data seq=",           // the device retransmitted something already held
+        "重复数据 seq=",           // the device retransmitted something already held
         // ── RSD / session / authorization layer ─────────────────────────────
         "StartService",
         "CreateSession",
@@ -143,7 +143,7 @@ enum RustLog {
     /// host → device.  jktcp's `keep-alive on hp=` lines are deliberately absent:
     /// those come from a local timer and keep ticking on a dead flow, i.e. they
     /// are exactly the false "still alive" signal this must never produce.
-    static let wireMarkers = ["Received DL message", "Sending device link message"]
+    static let wireMarkers = ["已收到 DL 消息", "正在发送设备链路消息"]
 
     // MARK: - Excerpts
 
@@ -166,12 +166,12 @@ enum RustLog {
         // Read the whole file then drop the prefix: FileHandle's read-to-end API
         // was renamed in the iOS 27 SDK, and this log is a few hundred KB.
         guard let whole = try? Data(contentsOf: url) else {
-            return "  (no readable minimuxer.log at \(url.path))"
+            return "  （\(url.path) 处没有可读的 minimuxer.log）"
         }
         let from = Int(min(offset ?? 0, UInt64(whole.count)))
         let data = whole.dropFirst(from)
         guard let text = String(data: data, encoding: .utf8) else {
-            return "  (minimuxer.log unreadable from byte \(from))"
+            return "  （minimuxer.log 从第 \(from) 字节起不可读）"
         }
 
         let lines = text.split(separator: "\n", omittingEmptySubsequences: true)
@@ -181,9 +181,9 @@ enum RustLog {
             return lowered.contains { low.contains($0) }
         }
 
-        var out = "  rust log excerpt"
-        if offset != nil { out += " after byte \(from)" }
-        out += ": \(lines.count) new lines, \(hits.count) match protocol/flow keywords"
+        var out = "  Rust 日志摘录"
+        if offset != nil { out += " ／自第 \(from) 字节起" }
+        out += "：新增 \(lines.count) 行，其中 \(hits.count) 行命中协议／流量关键词"
         out += "\n" + messageHistogram(lines)
         // The DL census says whether the *protocol* moved; this says whether the
         // *tunnel* was delivering. They are different failures with the same
@@ -192,7 +192,7 @@ enum RustLog {
         // not hand up, and "device→host: none" alone reads like a dead device.
         out += "\n" + WireCensus.transportLine(lines)
         guard !hits.isEmpty else {
-            return out + "\n  (nothing matched — the Rust log never reached the mobilebackup2 or jktcp layer)"
+            return out + "\n  （无任何匹配 — Rust 日志从未到达 mobilebackup2 或 jktcp 层）"
         }
         if hits.count <= maxLines {
             return out + "\n" + hits.map { "  | \($0)" }.joined(separator: "\n")
@@ -204,7 +204,7 @@ enum RustLog {
         let head = hits.prefix(headCount).map { "  | \($0)" }
         let tail = hits.suffix(tailCount).map { "  | \($0)" }
         return out + "\n" + (head
-            + ["  | … \(omitted) matching lines omitted …"]
+            + ["  | …… 省略 \(omitted) 行匹配内容 ……"]
             + tail).joined(separator: "\n")
     }
 
@@ -220,10 +220,10 @@ enum RustLog {
         var received: [String: Int] = [:]
         var sent: [String: Int] = [:]
         for line in lines {
-            if let range = line.range(of: "Received DL message: ") {
+            if let range = line.range(of: "已收到 DL 消息：") {
                 let tag = line[range.upperBound...].prefix { !$0.isWhitespace }
                 received[String(tag), default: 0] += 1
-            } else if let range = line.range(of: "Sending device link message: ") {
+            } else if let range = line.range(of: "正在发送设备链路消息：") {
                 let tag = line[range.upperBound...].prefix { !$0.isWhitespace }
                 sent[String(tag), default: 0] += 1
             }
@@ -232,8 +232,8 @@ enum RustLog {
             .prefix(6).map { "\($0.key)×\($0.value)" }.joined(separator: " ")
         let hostSays = sent.sorted { ($0.value, $1.key) > ($1.value, $0.key) }
             .prefix(6).map { "\($0.key)×\($0.value)" }.joined(separator: " ")
-        return "  DL census — device→host: \(deviceSays.isEmpty ? "none" : deviceSays)"
-            + " ; host→device: \(hostSays.isEmpty ? "none" : hostSays)"
+        return "  DL 统计 — 设备→主机：\(deviceSays.isEmpty ? "none" : deviceSays) ；主机→设备：\(hostSays.isEmpty ? "none" : hostSays)"
+            + ""
     }
 
     /// Raw tail, used to prove the sink is live and to show an unclassified
@@ -243,11 +243,11 @@ enum RustLog {
     ///   confines it to the current run).  nil = whole file.
     static func tail(_ count: Int = 30, since: UInt64? = nil) -> String {
         guard let whole = try? Data(contentsOf: url) else {
-            return "(no minimuxer.log at \(url.path))"
+            return "（\(url.path) 处没有 minimuxer.log）"
         }
         let from = Int(min(since ?? 0, UInt64(whole.count)))
         guard let text = String(data: whole.dropFirst(from), encoding: .utf8) else {
-            return "(minimuxer.log unreadable from byte \(from))"
+            return "（minimuxer.log 从第 \(from) 字节起不可读）"
         }
         return text.split(separator: "\n").suffix(count).joined(separator: "\n")
     }
@@ -276,10 +276,10 @@ enum RustLog {
         guard let whole = try? Data(contentsOf: url) else { return false }
         let start = Int(min(from ?? 0, UInt64(whole.count)))
         guard let text = String(data: whole.dropFirst(start), encoding: .utf8) else { return false }
-        guard let lastStart = text.range(of: "Starting DeviceLink version exchange",
+        guard let lastStart = text.range(of: "正在开始 DeviceLink 版本交换",
                                          options: .backwards) else {
             return false
         }
-        return !text[lastStart.upperBound...].contains("Received DL message")
+        return !text[lastStart.upperBound...].contains("已收到 DL 消息")
     }
 }

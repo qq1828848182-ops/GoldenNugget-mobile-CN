@@ -90,7 +90,7 @@ enum CommunityCatalog {
         }
         let name = try text("name", limit: 60, required: true)
         let author = try text("author", limit: 40, required: true)
-        let detail = try text("description", limit: 500)
+        let detail = try text("描述", limit: 500)
         let minimum = try text("ios_min", limit: 8), maximum = try text("ios_max", limit: 8)
         for version in [minimum, maximum] where !version.isEmpty {
             guard matches(version, "^[0-9]{1,2}(\\.[0-9]{1,2}){0,2}$") else { throw CommunityError("Invalid iOS range.") }
@@ -176,9 +176,9 @@ enum CommunityCatalog {
     static func installPreset(_ entry: Entry) throws -> String {
         guard let code = entry.code else { throw CommunityError("This entry is a template.") }
         var document = try PresetShareCode.decode(code)
-        var meta = document["metadata"] as? [String: Any] ?? [:]
+        var meta = document["元数据"] as? [String: Any] ?? [:]
         meta["catalog"] = ["id": entry.id, "sha256": entry.fingerprint]
-        document["metadata"] = meta
+        document["元数据"] = meta
         if let existing = installedPreset(entry) {
             try JSONSerialization.data(withJSONObject: document, options: [.prettyPrinted, .sortedKeys])
                 .write(to: GoldenNuggetPresets.fileURL(for: existing), options: .atomic)

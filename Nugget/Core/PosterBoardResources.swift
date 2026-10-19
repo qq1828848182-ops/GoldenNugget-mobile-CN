@@ -21,7 +21,7 @@ enum PosterBoardResources {
     private static func b64(_ value: String) -> Data {
         guard let data = Data(base64Encoded: value, options: .ignoreUnknownCharacters),
               !data.isEmpty || value.isEmpty else {
-            preconditionFailure("PosterBoardResources: a base64 literal did not decode")
+            preconditionFailure("PosterBoardResources：一个 base64 字面量未能解码")
         }
         return data
     }

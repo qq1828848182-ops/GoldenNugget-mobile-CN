@@ -87,9 +87,9 @@ enum PosterBoard {
 /// select is not a feature, and reproducing it would mean offering a mode the
 /// reference's own users have never run.
 enum PosterBoardResetMode: String, CaseIterable, Identifiable, Hashable {
-    case collections = "Collections"
-    case suggestedPhotos = "Suggested Photos"
-    case galleryCache = "Gallery Cache"
+    case collections = "集合"
+    case suggestedPhotos = "建议的照片"
+    case galleryCache = "图库缓存"
 
     var id: String { rawValue }
 
@@ -97,11 +97,11 @@ enum PosterBoardResetMode: String, CaseIterable, Identifiable, Hashable {
     var detail: String {
         switch self {
         case .collections:
-            return "Clears the Collections and MercuryPoster descriptor folders."
+            return "清除 Collections 和 MercuryPoster 描述符文件夹。"
         case .suggestedPhotos:
-            return "Clears the Photos poster provider's descriptor folder."
+            return "清除照片壁纸提供方的描述符文件夹。"
         case .galleryCache:
-            return "Clears the gallery cache."
+            return "清除图库缓存。"
         }
     }
 
@@ -188,13 +188,13 @@ struct PosterBoardSelection {
 
     /// The reference's own summary of what an apply will carry, for the log.
     var describe: String {
-        if fullReset { return "full reset" }
+        if fullReset { return "完全重置" }
         if !resetModes.isEmpty {
-            return "reset: " + resetModes.map(\.rawValue).sorted().joined(separator: ", ")
+            return "重置：" + resetModes.map(\.rawValue).sorted().joined(separator: ", ")
         }
         var parts: [String] = []
-        if !tendies.isEmpty { parts.append("\(tendies.count) pack(s)") }
-        if let video { parts.append("video \(video.lastPathComponent)") }
+        if !tendies.isEmpty { parts.append("\(tendies.count) 个资源包") }
+        if let video { parts.append("视频 \(video.lastPathComponent)") }
         return parts.isEmpty ? "nothing" : parts.joined(separator: ", ")
     }
 
@@ -324,7 +324,7 @@ extension PosterBoard {
         if !selection.resetModes.isEmpty {
             for mode in selection.resetModes.sorted(by: { $0.rawValue < $1.rawValue }) {
                 for path in mode.paths(structureVersion: version) {
-                    log("  → reset \(mode.rawValue): \(storeRoot)\(path)")
+                    log("  → 重置 \(mode.rawValue)：\(storeRoot)\(path)")
                     payloads.append(TweakPayload(domain: domain,
                                                  relativePath: storeRoot + path,
                                                  contents: Data()))
@@ -339,7 +339,7 @@ extension PosterBoard {
         //    own keeps this branch open, which is why `templates` is a term here
         //    and not only in the walk below.
         guard !selection.tendies.isEmpty || selection.video != nil || !templates.isEmpty else {
-            log("PosterBoard: nothing selected.")
+            log("PosterBoard：未选择任何内容。")
             return []
         }
 
@@ -360,7 +360,7 @@ extension PosterBoard {
             // Deterministic, not `uuid4()`: see this type's divergence note.
             let destination = workingDirectory.appendingPathComponent(
                 String(format: "%03d-%@", index, sanitised(tendie.name)), conformingTo: .data)
-            log("  → unpacking \(tendie.name) (\(tendie.summary))")
+            log("  → 正在解包 \(tendie.name)（\(tendie.summary)）")
             try tendie.extract(to: destination)
             // Each pack is converted in its own folder so the per-pack
             // "convert / install as is" answer is honoured
@@ -378,7 +378,7 @@ extension PosterBoard {
             let destination = workingDirectory.appendingPathComponent(
                 String(format: "t%03d-%@", index, sanitised(template.url.lastPathComponent)),
                 conformingTo: .data)
-            log("  → configuring template \(template.title) (\(template.summary))")
+            log("  → 正在配置模板 \(template.title)（\(template.summary)）")
             try template.extract(to: destination)
             convertLegacyPack(template.title, at: destination, log: log)
         }
@@ -400,10 +400,10 @@ extension PosterBoard {
         let stagedItems = builder.configs
         if database == nil && !stagedItems.isEmpty {
             throw GoldenNuggetError(
-                "PosterBoard has no database to add these wallpapers to. Fetch the device's "
-                + "PosterBoard database first (the page's database card) — the store's "
-                + "database is what makes a wallpaper appear in the picker, and it cannot be "
-                + "synthesised: it carries the device's own row set.")
+                "PosterBoard 没有可添加这些壁纸的数据库。"
+                + "请先从设备获取其 PosterBoard 数据库（页面上的数据库卡片）——正是存储的数据库让壁纸出现在选择器中，而它无法合成：它承载的是设备自己的记录集。"
+                + ""
+                + "")
         }
         if let database {
             let staged = try PosterBoardStore.stitch(database: database,
@@ -430,8 +430,8 @@ extension PosterBoard {
                                          contents: try refreshPreferences(deviceVersion: deviceVersion)))
         }
 
-        log("PosterBoard: \(payloads.count) file(s) — \(builder.configs.count) wallpaper(s) "
-            + "staged into the store database (\(builder.payloads.count) from disk)")
+        log("PosterBoard：\(payloads.count) 个文件——\(builder.configs.count) 张壁纸已暂存到存储数据库（其中 \(builder.payloads.count) 个来自磁盘）"
+            + "")
         return payloads
     }
 
@@ -460,7 +460,7 @@ extension PosterBoard {
         // reason — they keep the /<v> folder a real directory, so the database
         // injection below lands cleanly.
         for subtree in ["/Extensions", "/GalleryCache", "/Backups"] {
-            log("  → full reset: zeroing \(storeRoot)/\(structureVersion)\(subtree)")
+            log("  → 完全重置：清空 \(storeRoot)/\(structureVersion)\(subtree)")
             payloads.append(TweakPayload(domain: domain,
                                          relativePath: "\(storeRoot)/\(structureVersion)\(subtree)",
                                          contents: Data()))
@@ -492,9 +492,9 @@ extension PosterBoard {
         // not a stricter one.  Guessing "not 26.4" would silently write a
         // smaller plist than a 26.4+ device needs.
         guard let atLeast264 = compareVersion(deviceVersion, "26.4") else {
-            throw GoldenNuggetError("PosterBoard needs the device's iOS version to decide which "
-                + "reset preferences to write (26.4 added two migration lists), and "
-                + "\"\(deviceVersion)\" is not a version. Read the device identity and try again.")
+            throw GoldenNuggetError("PosterBoard 需要设备的 iOS 版本才能决定写入哪些重置偏好设置（26.4 新增了两个迁移列表），而 \"\(deviceVersion)\" 并不是版本号。"
+                + "请先读取设备身份，然后重试。"
+                + "")
         }
         var plist: [String: Any] = [
             "PBF_LOCALE_DID_CHANGE": false,
@@ -569,10 +569,10 @@ extension PosterBoard {
         guard PosterBoardPreferences.autoConvertLegacy else { return false }
         guard pack.autoConvert != false else { return false }
         guard let atLeast27 = compareVersion(deviceVersion, "27") else {
-            log("  → skipping legacy conversion of \(pack.name): PosterBoard needs the device's "
-                + "iOS version to tell a legacy wallpaper from a modern one (27 changed the "
-                + "format), and \"\(deviceVersion)\" is not a version. Read the device identity "
-                + "and try again.")
+            log("  → 跳过 \(pack.name) 的旧版转换：PosterBoard 需要设备的 iOS 版本才能区分旧版壁纸和新版壁纸（27 改变了格式），而 \"\(deviceVersion)\" 并不是版本号。"
+                + "请先读取设备身份，然后重试。"
+                + ""
+                + "")
             return false
         }
         return atLeast27 >= 0
@@ -600,10 +600,10 @@ extension PosterBoard {
                 log("    ↳ \(entry.renamedLine)")
             }
             if converted.isEmpty {
-                log("    ↳ \(name): nothing legacy to convert")
+                log("    ↳ \(name)：没有需要转换的旧版内容")
             }
         } catch {
-            log("    ↳ \(name): conversion failed, installing as-is — \(error)")
+            log("    ↳ \(name)：转换失败，按原样安装 — \(error)")
         }
     }
 }
@@ -697,9 +697,9 @@ private struct PosterBoardBuilder {
                     // has that shape.
                     let components = restorePath.components(separatedBy: "/")
                     guard components.count > 6 else {
-                        throw GoldenNuggetError("PosterBoard: cannot read the provider "
-                            + "extension out of \(restorePath) — the descriptor was routed "
-                            + "to an unexpected place.")
+                        throw GoldenNuggetError("PosterBoard：无法从 \(restorePath) 读取出提供方扩展名——该描述符被分发到了意外的位置。"
+                            + ""
+                            + "")
                     }
                     configs.append(PosterBoardConfigItem(uuid: folderName,
                                                          extensionID: components[6],
@@ -752,7 +752,7 @@ private struct PosterBoardBuilder {
                         // The reference catches `IOError` and moves on. Kept,
                         // but said out loud: a silently missing descriptor file
                         // is a wallpaper that half-exists.
-                        log("  ⚠️ skipping \(destination): \(error)")
+                        log("  ⚠️ 跳过 \(destination)：\(error)")
                     }
                 } else {
                     // Every descriptor version directory gets the three
@@ -912,7 +912,7 @@ extension PosterBoard {
         do {
             try fm.copyItem(at: source, to: destination)
         } catch {
-            throw GoldenNuggetError("Could not copy \(source.lastPathComponent) into the app: "
+            throw GoldenNuggetError("无法将 \(source.lastPathComponent) 复制到应用中："
                 + error.localizedDescription)
         }
         return destination
@@ -938,7 +938,7 @@ enum PosterBoardPlist {
         let data = try Data(contentsOf: url)
         let object = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
         guard let plist = object as? [String: Any] else {
-            throw GoldenNuggetError("\(url.lastPathComponent) is a plist but not a dictionary.")
+            throw GoldenNuggetError("\(url.lastPathComponent) 是 plist，但不是字典。")
         }
         return plist
     }
@@ -989,7 +989,7 @@ enum PosterBoardPlist {
     static func alignedForFamily(_ data: Data) throws -> Data {
         let object = try PropertyListSerialization.propertyList(from: data, options: [], format: nil)
         guard var plist = object as? [String: Any] else {
-            throw GoldenNuggetError("Wallpaper.plist is not a dictionary.")
+            throw GoldenNuggetError("Wallpaper.plist 不是字典。")
         }
         let newIdentifier = plist["identifier"]
         if let assets = plist["assets"] as? [String: Any],

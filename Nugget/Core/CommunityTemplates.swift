@@ -70,7 +70,7 @@ struct CommunityTemplate: Identifiable {
                        "/var/Managed Preferences/mobile/com.apple.purplebuddy.plist", "/var/mobile/Library/Backup/"]
         guard path.hasPrefix("/var/"), relativePath(String(path.dropFirst())),
               !blocked.contains(where: path.hasPrefix), let target = TweakDomainMap.split(path: path),
-              !target.relativePath.isEmpty else { throw CommunityError("Protected or unsupported template path: \(path)") }
+              !target.relativePath.isEmpty else { throw CommunityError("受保护或不支持的模板路径：\(path)") }
         return target
     }
     static func validateValue(_ value: Any, depth: Int = 0) throws {
@@ -97,7 +97,7 @@ struct CommunityTemplate: Identifiable {
         }
         func read(_ path: String, limit: Int) throws -> Data {
             guard let entry = entries[path], entry.type == .file, entry.uncompressedSize <= limit else {
-                throw CommunityError("Missing or oversized template resource: \(path)")
+                throw CommunityError("模板资源缺失或过大：\(path)")
             }
             var data = Data()
             let checksum = try archive.extract(entry) { chunk in
@@ -105,7 +105,7 @@ struct CommunityTemplate: Identifiable {
                 data.append(chunk)
             }
             guard checksum == entry.checksum, data.count == Int(entry.uncompressedSize) else {
-                throw CommunityError("Corrupt template resource: \(path)")
+                throw CommunityError("模板资源损坏：\(path)")
             }
             return data
         }
@@ -122,7 +122,7 @@ struct CommunityTemplate: Identifiable {
         func text(_ raw: [String: Any], _ key: String, limit: Int, required: Bool = false) throws -> String {
             guard let string = (raw[key] ?? "") as? String, string.count <= limit,
                   !required || !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                throw CommunityError("Invalid template text: \(key)")
+                throw CommunityError("模板文本无效：\(key)")
             }
             return string
         }
@@ -212,13 +212,13 @@ struct CommunityTemplate: Identifiable {
             }
             let enabled = flag.boolValue
             return Tweak(id: id, label: try text(row, "label", limit: 80, required: true),
-                         detail: try text(row, "description", limit: 500), minimum: try version(row, "min_version"),
+                         detail: try text(row, "描述", limit: 500), minimum: try version(row, "min_version"),
                          maximum: try version(row, "max_version"), control: control, writes: on, writesOff: off,
                          enabled: enabled, value: control?.initial ?? false)
         }
         return CommunityTemplate(id: id ?? url.deletingPathExtension().lastPathComponent,
                                  title: try text(raw, "title", limit: 200, required: true), author: try text(raw, "author", limit: 200),
-                                 detail: try text(raw, "description", limit: 2000), minimum: try version(raw, "min_version"),
+                                 detail: try text(raw, "描述", limit: 2000), minimum: try version(raw, "min_version"),
                                  maximum: try version(raw, "max_version"), url: url, tweaks: tweaks)
     }
 }
@@ -355,13 +355,13 @@ struct CommunityTemplate: Identifiable {
             for tweak in template.tweaks where tweak.supports(version) {
                 for write in tweak.enabled ? tweak.writes : tweak.writesOff {
                     if write.kind == "plist" {
-                        guard files[write.path] == nil else { throw CommunityError("Templates conflict at \(write.path).") }
+                        guard files[write.path] == nil else { throw CommunityError("模板在 \(write.path) 处冲突。") }
                         let value = tweak.control?.clamp(tweak.value) ?? tweak.value
                         let values = write.values.mapValues { tweak.control == nil ? $0 : replace($0, with: value) }
                         plists[write.path, default: [:]].merge(values) { _, new in new }
                     } else {
                         guard plists[write.path] == nil, files[write.path] == nil || files[write.path] == write.data else {
-                            throw CommunityError("Templates conflict at \(write.path).")
+                            throw CommunityError("模板在 \(write.path) 处冲突。")
                         }
                         files[write.path] = write.data
                     }

@@ -29,7 +29,7 @@ enum AppPaths {
     /// Its own store and its own manifest rather than the backup's
     /// `MediaDomain` rows: a protective prune keeps only the payloads it pulled
     /// itself, so anything parked here would be dropped on the next apply.
-    static let mediaStore = URL.documents.appendingPathComponent("Media", conformingTo: .data)
+    static let mediaStore = URL.documents.appendingPathComponent("媒体", conformingTo: .data)
 
     static func fullBackupRoot(udid: String) -> URL {
         URL.documents.appendingPathComponent(udid, conformingTo: .data)

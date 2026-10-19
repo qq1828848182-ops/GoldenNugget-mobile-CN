@@ -50,45 +50,45 @@ enum PosterBoardStore {
         let path = url.path
         let attributes = try? FileManager.default.attributesOfItem(atPath: path)
         guard let size = attributes?[.size] as? Int else {
-            return "there is no file at \(path)"
+            return "\(path) 处没有文件"
         }
-        guard size >= 100 else { return "\(size) bytes — too small to be a database" }
+        guard size >= 100 else { return "\(size) 字节 — 太小，不可能是数据库" }
         guard let db = open(path) else {
-            return "SQLite will not open it: \(openComplaint(path))"
+            return "SQLite 无法打开它：\(openComplaint(path))"
         }
         defer { sqlite3_close(db) }
 
         guard exec(db, "SELECT 1 FROM sqlite_master LIMIT 1") else {
-            return "sqlite_master is unreadable: \(String(cString: sqlite3_errmsg(db)))"
+            return "sqlite_master 不可读：\(String(cString: sqlite3_errmsg(db)))"
         }
         if strict {
             let missing = requiredTables.filter { !tableExists(db, $0) }
             guard missing.isEmpty else {
-                return "missing table(s): \(missing.joined(separator: ", "))"
+                return "缺少表：\(missing.joined(separator: ", "))"
             }
         } else {
             let tables = tableNames(db).map { $0.lowercased() }
             guard tables.contains(where: { $0.contains("poster") }) else {
-                return "no table is named after PosterBoard (tables: "
-                    + "\(tables.isEmpty ? "none" : tables.joined(separator: ", ")))"
+                return "没有以 PosterBoard 命名的表（表：\(tables.isEmpty ? "none" : tables.joined(separator: ", "))）"
+                    + ""
             }
         }
         var statement: OpaquePointer?
         defer { sqlite3_finalize(statement) }
         guard sqlite3_prepare_v2(db, "PRAGMA integrity_check", -1, &statement, nil) == SQLITE_OK else {
-            return "integrity_check would not run: \(String(cString: sqlite3_errmsg(db)))"
+            return "integrity_check 无法运行：\(String(cString: sqlite3_errmsg(db)))"
         }
         switch sqlite3_step(statement) {
         case SQLITE_ROW:
             guard let text = sqlite3_column_text(statement, 0) else {
-                return "integrity_check said nothing"
+                return "integrity_check 没有返回任何内容"
             }
             let verdict = String(cString: text)
-            return verdict == "ok" ? nil : "integrity_check: \(verdict)"
+            return verdict == "ok" ? nil : "integrity_check：\(verdict)"
         case SQLITE_DONE:
-            return "integrity_check returned no row"
+            return "integrity_check 未返回任何行"
         default:
-            return "integrity_check failed: \(String(cString: sqlite3_errmsg(db)))"
+            return "integrity_check 失败：\(String(cString: sqlite3_errmsg(db)))"
         }
     }
 
@@ -99,7 +99,7 @@ enum PosterBoardStore {
         var db: OpaquePointer?
         let rc = sqlite3_open_v2(path, &db, SQLITE_OPEN_READWRITE, nil)
         defer { sqlite3_close(db) }
-        guard rc != SQLITE_OK else { return "opened read-write only" }
+        guard rc != SQLITE_OK else { return "仅以读写方式打开" }
         return String(cString: sqlite3_errmsg(db))
     }
 
@@ -115,7 +115,7 @@ enum PosterBoardStore {
         let status = sqlite3_prepare_v2(db, "SELECT 1 FROM sqlite_master LIMIT 1", -1, &statement, nil)
         if status == SQLITE_OK { return false }
         let message = String(cString: sqlite3_errmsg(db)).lowercased()
-        return message.contains("encrypted") || message.contains("not a database")
+        return message.contains("encrypted") || message.contains("不是数据库")
     }
 
     /// The tables a rejected file does carry, for the log line that says why.
@@ -123,7 +123,7 @@ enum PosterBoardStore {
         guard let db = open(url.path) else { return "unreadable" }
         defer { sqlite3_close(db) }
         let tables = tableNames(db)
-        return tables.isEmpty ? "no tables" : tables.sorted().joined(separator: ", ")
+        return tables.isEmpty ? "没有表" : tables.sorted().joined(separator: ", ")
     }
 
     // MARK: - The empty database
@@ -134,8 +134,8 @@ enum PosterBoardStore {
         try? FileManager.default.removeItem(at: url)
         var db: OpaquePointer?
         guard sqlite3_open(url.path, &db) == SQLITE_OK, let db else {
-            throw GoldenNuggetError("Could not create the empty PosterBoard database at "
-                + "\(url.lastPathComponent).")
+            throw GoldenNuggetError("无法在 \(url.lastPathComponent) 创建空的 PosterBoard 数据库。"
+                + "")
         }
         defer { sqlite3_close(db) }
         let schema = """
@@ -157,7 +157,7 @@ enum PosterBoardStore {
             );
             """
         guard exec(db, schema) else {
-            throw GoldenNuggetError("Could not create the empty PosterBoard database schema: "
+            throw GoldenNuggetError("无法创建空的 PosterBoard 数据库模式："
                 + String(cString: sqlite3_errmsg(db)))
         }
     }
@@ -173,16 +173,16 @@ enum PosterBoardStore {
                        workingDirectory: URL) throws -> URL {
         if isEncrypted(database) {
             throw GoldenNuggetError(
-                "That PosterBoard database is encrypted. Turn off \"Encrypt local backup\" in "
-                + "Finder / iTunes, take a fresh backup, and fetch it again — a plaintext "
-                + "payload injected into an encrypted store cannot be decrypted by the "
-                + "restore agent (MBErrorDomain/205).")
+                "该 PosterBoard 数据库已加密。"
+                + "请在 Finder / iTunes 中关闭 \"加密本地备份\"，重新做一次备份并再次获取——注入加密存储的明文载荷无法被恢复代理解密（MBErrorDomain/205）。"
+                + ""
+                + "")
         }
         guard validate(database) || validate(database, strict: false) else {
             throw GoldenNuggetError(
-                "The PosterBoard database is not usable — it does not carry the store's "
-                + "tables (\(describeTables(database))). It may be a truncated or interrupted "
-                + "fetch; fetch it again.")
+                "该 PosterBoard 数据库不可用——它不含存储应有的表（\(describeTables(database))）。"
+                + "可能是获取被截断或中断；请重新获取。"
+                + "")
         }
 
         let fm = FileManager.default
@@ -192,26 +192,26 @@ enum PosterBoardStore {
         try? fm.removeItem(at: staged)
         try fm.copyItem(at: database, to: staged)
         guard validate(staged) else {
-            throw GoldenNuggetError("The staged copy of the PosterBoard database did not "
-                + "validate — the source may be corrupt. Fetch it again.")
+            throw GoldenNuggetError("PosterBoard 数据库的暂存副本未通过校验——源文件可能已损坏。"
+                + "请重新获取。")
         }
 
         var db: OpaquePointer?
         guard sqlite3_open(staged.path, &db) == SQLITE_OK, let db else {
-            throw GoldenNuggetError("Could not open the staged PosterBoard database.")
+            throw GoldenNuggetError("无法打开暂存的 PosterBoard 数据库。")
         }
         defer { sqlite3_close(db) }
         guard exec(db, "PRAGMA busy_timeout = 10000") else {
-            throw GoldenNuggetError("Could not set a busy timeout on the staged database.")
+            throw GoldenNuggetError("无法在暂存的数据库上设置忙等待超时。")
         }
         guard exec(db, "BEGIN IMMEDIATE") else {
-            throw GoldenNuggetError("Could not start a transaction on the staged PosterBoard "
-                + "database: " + String(cString: sqlite3_errmsg(db)))
+            throw GoldenNuggetError("无法在暂存的 PosterBoard 数据库上启动事务："
+                + "" + String(cString: sqlite3_errmsg(db)))
         }
         do {
             try write(db, items: items)
             guard exec(db, "COMMIT") else {
-                throw GoldenNuggetError("Could not commit the PosterBoard rows: "
+                throw GoldenNuggetError("无法提交 PosterBoard 记录："
                     + String(cString: sqlite3_errmsg(db)))
             }
         } catch {
@@ -368,7 +368,7 @@ enum PosterBoardStore {
         var statement: OpaquePointer?
         defer { sqlite3_finalize(statement) }
         guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else {
-            throw GoldenNuggetError("PosterBoard query failed: \(sql) — "
+            throw GoldenNuggetError("PosterBoard 查询失败：\(sql) — "
                 + String(cString: sqlite3_errmsg(db)))
         }
         bind(statement, bindings)
@@ -382,12 +382,12 @@ enum PosterBoardStore {
         var statement: OpaquePointer?
         defer { sqlite3_finalize(statement) }
         guard sqlite3_prepare_v2(db, sql, -1, &statement, nil) == SQLITE_OK else {
-            throw GoldenNuggetError("PosterBoard write failed: \(sql) — "
+            throw GoldenNuggetError("PosterBoard 写入失败：\(sql) — "
                 + String(cString: sqlite3_errmsg(db)))
         }
         bind(statement, bindings)
         guard sqlite3_step(statement) == SQLITE_DONE else {
-            throw GoldenNuggetError("PosterBoard write failed: \(sql) — "
+            throw GoldenNuggetError("PosterBoard 写入失败：\(sql) — "
                 + String(cString: sqlite3_errmsg(db)))
         }
     }

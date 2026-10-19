@@ -51,7 +51,7 @@ struct WalletView: View {
             .padding(.vertical)
         }
         .background(Color(uiColor: .systemGroupedBackground))
-        .navigationTitle(cards.isEmpty ? "Wallet" : "Wallet Cards (\(cards.count))")
+        .navigationTitle(cards.isEmpty ? "钱包" : "钱包卡片（\(cards.count)）")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -60,7 +60,7 @@ struct WalletView: View {
                 } label: {
                     HStack(spacing: 4) {
                         Image(systemName: scanning ? "stop.circle.fill" : "wave.3.left.circle")
-                        Text(scanning ? "Stop Scan" : "Scan Cards")
+                        Text(scanning ? "停止扫描" : "扫描卡片")
                     }
                     .font(.subheadline.bold())
                     .foregroundStyle(scanning ? .red : .blue)
@@ -73,19 +73,19 @@ struct WalletView: View {
                     Button {
                         applyToAll()
                     } label: {
-                        Label("Set Skin for All Cards", systemImage: "photo.on.rectangle.angled")
+                        Label("为所有卡片设置皮肤", systemImage: "photo.on.rectangle.angled")
                     }
                     .disabled(selectedCount == 0)
 
                     Button {
                         setAllSelected(true)
                     } label: {
-                        Label("Select All", systemImage: "checkmark.circle")
+                        Label("全选", systemImage: "checkmark.circle")
                     }
                     Button {
                         setAllSelected(false)
                     } label: {
-                        Label("Deselect All", systemImage: "circle")
+                        Label("取消全选", systemImage: "circle")
                     }
 
                     Divider()
@@ -93,7 +93,7 @@ struct WalletView: View {
                     Button(role: .destructive) {
                         clearAll()
                     } label: {
-                        Label("Clear All Cards", systemImage: "trash")
+                        Label("清空所有卡片", systemImage: "trash")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle").font(.title3)
@@ -113,7 +113,7 @@ struct WalletView: View {
                             Text("Flashing…")
                         } else {
                             Image(systemName: "bolt.fill")
-                            Text("Flash")
+                            Text("闪存日志")
                         }
                     }
                     .font(.system(size: 13, weight: .semibold))
@@ -139,7 +139,7 @@ struct WalletView: View {
         let reason = Airlift.unsupportedReason(deviceVersion: identity.version)
         if !reason.isEmpty { return reason }
         if !FileManager.default.fileExists(atPath: AppPaths.pairingFile.path) {
-            return "AirLift needs a pairing record and none is stored. Import one on the home page."
+            return "AirLift 需要配对记录，但当前未存储任何记录。请在主页导入一份。"
         }
         return ""
     }
@@ -161,19 +161,19 @@ struct WalletView: View {
                 HStack {
                     if scanning {
                         ProgressView().scaleEffect(0.85)
-                        Text("Live Scanner Active")
+                        Text("实时扫描器已启用")
                             .font(.subheadline.bold())
                             .foregroundStyle(.blue)
                     } else {
                         Image(systemName: "wave.3.left.circle")
                             .foregroundStyle(.secondary)
-                        Text("Status")
+                        Text("状态")
                             .font(.subheadline.bold())
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
                     if scanning {
-                        Button("Stop") { toggleScan() }
+                        Button("停止") { toggleScan() }
                             .font(.caption.bold())
                             .buttonStyle(.borderedProminent)
                             .tint(.red)
@@ -219,13 +219,13 @@ struct WalletView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.blue.opacity(0.8))
 
-            Text("No Cards Detected Yet")
+            Text("尚未检测到卡片")
                 .font(.title3.bold())
 
             VStack(alignment: .leading, spacing: 10) {
-                step("1.", "Tap **Scan Cards** in the toolbar above.")
-                step("2.", "Hold a card against the reader while it listens.")
-                step("3.", "The card appears here — tap it to assign a skin.")
+                step("1.", "请在上方的工具栏中轻点 **扫描卡片**。")
+                step("2.", "在读取器侦听时把卡片贴近它。")
+                step("3.", "卡片会显示在这里 —— 轻点它以指定皮肤。")
             }
             .font(.subheadline)
             .foregroundStyle(.secondary)
@@ -240,7 +240,7 @@ struct WalletView: View {
                 HStack(spacing: 6) {
                     Spacer()
                     Image(systemName: scanning ? "stop.circle.fill" : "wave.3.left.circle")
-                    Text(scanning ? "Stop Scan" : "Scan Cards")
+                    Text(scanning ? "停止扫描" : "扫描卡片")
                     Spacer()
                 }
                 .font(.headline)
@@ -283,7 +283,7 @@ struct WalletView: View {
     private var logCard: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Flash Log (\(log.count) lines)").font(.subheadline.bold())
+                Text("闪存日志（\(log.count) 行）").font(.subheadline.bold())
                 Spacer()
                 Button("Clear") { log.removeAll() }.font(.caption)
             }
@@ -347,7 +347,7 @@ struct WalletView: View {
         }
         scanning = true
         log = []
-        status = "Listening. Hold a card against the reader."
+        status = "正在侦听。把卡片贴近读取器。"
         tone = .secondary
         Task { @MainActor in
             do {
@@ -372,7 +372,7 @@ struct WalletView: View {
         guard !cards.contains(where: { $0.id == identifier }) else { return }
         cards.append(WalletCard(id: identifier))
         WalletCardStore.save(cards)
-        status = "Found \(identifier.prefix(10))…"
+        status = "已找到 \(identifier.prefix(10))…"
         tone = .primary
     }
 
@@ -390,7 +390,7 @@ struct WalletView: View {
                     log: { line in Task { @MainActor in log.append(line) } },
                     progress: { _ in }
                 )
-                status = "Card skins applied."
+                status = "卡片皮肤已应用。"
                 tone = .primary
             } catch {
                 status = error.localizedDescription
@@ -536,7 +536,7 @@ private struct WalletCardRow: View {
                 Text("Assign Card Skin")
                     .font(.subheadline.bold())
                     .foregroundStyle(.primary)
-                Text("Tap to choose photo")
+                Text("轻点以选择照片")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -548,7 +548,7 @@ private struct WalletCardRow: View {
             Toggle("", isOn: Binding(get: { card.isSelected }, set: onToggleSelected))
                 .labelsHidden()
 
-            Text("Card #\(index + 1)")
+            Text("卡片 #\(index + 1)")
                 .font(.system(size: 13, weight: .semibold))
 
             HStack(spacing: 4) {

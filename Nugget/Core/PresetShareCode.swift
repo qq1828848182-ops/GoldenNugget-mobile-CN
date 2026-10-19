@@ -32,17 +32,17 @@ enum PresetShareCode {
               payload["v"] as? Int == 1, let shared = payload["t"] as? [String: Any] else {
             throw CommunityError("Unsupported share code version.")
         }
-        let known = Set(TweakCatalog.allWithDaemons.map(\.id)).union(["Daemons", "StatusBar"])
+        let known = Set(TweakCatalog.allWithDaemons.map(\.id)).union(["守护进程", "StatusBar"])
         var tweaks = Dictionary(uniqueKeysWithValues: known.map { ($0, ["enabled": false] as [String: Any]) })
         for (id, entry) in shared where known.contains(id) && !localOnly.contains(id) {
             guard let value = entry as? [String: Any] else { throw CommunityError("Invalid tweak data.") }
             tweaks[id] = value
         }
         var metadata: [String: Any] = ["tags": ["shared"], "version": 2]
-        for (source, key) in [("n", "name"), ("d", "description"), ("ios", "ios_version")] {
+        for (source, key) in [("n", "name"), ("d", "描述"), ("ios", "ios_version")] {
             if let value = payload[source] as? String { metadata[key] = String(value.prefix(200)) }
         }
-        let document: [String: Any] = ["tweaks": tweaks, "metadata": metadata]
+        let document: [String: Any] = ["tweaks": tweaks, "元数据": metadata]
         guard GoldenNuggetPresets.isValidImport(document) else { throw CommunityError("Invalid preset data.") }
         return document
     }
@@ -60,13 +60,13 @@ enum PresetShareCode {
             }
             selected[id] = value.filter { $0.key != "type" }
         }
-        if selected["Daemons"] == nil && !legacyDaemons.isEmpty {
-            selected["Daemons"] = ["enabled": true, "value": legacyDaemons]
+        if selected["守护进程"] == nil && !legacyDaemons.isEmpty {
+            selected["守护进程"] = ["enabled": true, "value": legacyDaemons]
         }
         guard !selected.isEmpty else { throw CommunityError("No enabled tweaks to share.") }
-        let metadata = document["metadata"] as? [String: Any] ?? [:]
+        let metadata = document["元数据"] as? [String: Any] ?? [:]
         let payload: [String: Any] = ["v": 1, "t": selected, "n": String(name.prefix(200)),
-                                     "d": String((metadata["description"] as? String ?? "").prefix(200)),
+                                     "d": String((metadata["描述"] as? String ?? "").prefix(200)),
                                      "ios": String((metadata["ios_version"] as? String ?? "").prefix(200))]
         let raw = try JSONSerialization.data(withJSONObject: payload, options: [.sortedKeys])
         guard raw.count <= limit else { throw CommunityError("Preset too large to share.") }

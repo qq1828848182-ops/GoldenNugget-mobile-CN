@@ -23,7 +23,7 @@ struct StageTimer {
 
     func done(_ extra: String = "") {
         let secs = Date().timeIntervalSince(start)
-        AppLog.write("⏱ \(label): \(String(format: "%.1f", secs))s"
+        AppLog.write("⏱ \(label)：\(String(format: "%.1f", secs))s"
             + (extra.isEmpty ? "" : " — \(extra)"))
     }
 }
@@ -47,7 +47,7 @@ final class Heartbeat: @unchecked Sendable {
                 try? await Task.sleep(nanoseconds: seconds * 1_000_000_000)
                 if Task.isCancelled { break }
                 let secs = Int(Date().timeIntervalSince(self.start))
-                AppLog.write("⏱ \(label): \(secs)s elapsed — \(detail())")
+                AppLog.write("⏱ \(label)：已耗时 \(secs)s — \(detail())")
             }
         }
     }
@@ -104,10 +104,10 @@ final class PercentThrottle: @unchecked Sendable {
     /// Heartbeat detail for the restore stage; see `BackupTrace.livenessLine()`.
     func livenessLine() -> String {
         lock.lock()
-        let step = lastStep < 0 ? "not yet reported" : "≥\(lastStep)%"
+        let step = lastStep < 0 ? "尚未报告" : "≥\(lastStep)%"
         let idle = Int(Date().timeIntervalSince(lastActivity))
         lock.unlock()
-        return "progress \(step) — host callbacks idle \(idle)s"
+        return "进度 \(step) — 主机回调已空闲 \(idle)s"
     }
 }
 
@@ -154,10 +154,10 @@ final class BackupTrace: @unchecked Sendable {
     /// survived. Sorted so two runs diff cleanly.
     func domainSummary() -> String {
         lock.lock(); defer { lock.unlock() }
-        guard !byDomain.isEmpty else { return "no domains seen" }
+        guard !byDomain.isEmpty else { return "未看到任何域" }
         return byDomain
             .sorted { $0.key < $1.key }
-            .map { "\($0.key)(\($0.value.total) seen, \($0.value.kept) kept)" }
+            .map { "\($0.key)（已见 \($0.value.total)，已保留 \($0.value.kept)）" }
             .joined(separator: " ")
     }
 
@@ -190,7 +190,7 @@ final class BackupTrace: @unchecked Sendable {
         if keep { keptCount += 1 } else { droppedCount += 1 }
         lastActivity = Date()
         if samples.count < 12 {
-            samples.append("  stream[\(totalCount)] \(keep ? "KEEP" : "DROP") \(domain)/\(file)")
+            samples.append("  流[\(totalCount)] \(keep ? "KEEP" : "DROP") \(domain)/\(file)")
         }
     }
 
@@ -211,7 +211,7 @@ final class BackupTrace: @unchecked Sendable {
     func summary() -> String {
         lock.lock()
         defer { lock.unlock() }
-        let progress = lastPct < 0 ? "never reported" : "\(Int(lastPct))%"
+        let progress = lastPct < 0 ? "从未报告" : "\(Int(lastPct))%"
         return "streamed=\(totalCount) kept=\(keptCount) dropped=\(droppedCount) progress=\(progress)"
     }
 
@@ -220,17 +220,17 @@ final class BackupTrace: @unchecked Sendable {
     /// very different sentences, and only the clock separates them.
     func livenessLine() -> String {
         lock.lock()
-        let progress = lastPct < 0 ? "never reported" : "\(Int(lastPct))%"
+        let progress = lastPct < 0 ? "从未报告" : "\(Int(lastPct))%"
         let line = "streamed=\(totalCount) kept=\(keptCount) dropped=\(droppedCount) progress=\(progress)"
         let idle = Int(Date().timeIntervalSince(lastActivity))
         lock.unlock()
-        return line + " — host callbacks idle \(idle)s"
+        return line + " — 主机回调已空闲 \(idle)s"
     }
 
     func sampleLines() -> [String] {
         lock.lock()
         defer { lock.unlock() }
-        guard !samples.isEmpty else { return ["  (device never streamed a single file)"] }
+        guard !samples.isEmpty else { return ["  （设备从未传输任何一个文件）"] }
         return samples
     }
 }
